@@ -1,14 +1,14 @@
 _**Tool Chain**_
 repository
-*Github and using google drive for any additional files needed\
+  Github and using google drive for any additional files needed\
 Issue tracking
- *Github
+  Github
 Communication 
- *Discord 
+  Discord 
 Hosting
- *Initally we plan to run the web program on our local machines but will move to use a SECS vitrual machine or other web hosting soultions such as 000webhost
+  Initally we plan to run the web program on our local machines but will move to use a SECS vitrual machine or other web hosting soultions such as 000webhost
 Development environment
- *Any IDE anyone would like to use is welcome most group memebers will use plain text editors or markdown inside github
+  Any IDE anyone would like to use is welcome most group memebers will use plain text editors or markdown inside github
 
 _**Database Requirements:**_
 * Database service: MySQL (run localy for presentations, though web service for specific demonstartive purposes)
