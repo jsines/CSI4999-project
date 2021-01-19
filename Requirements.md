@@ -10,3 +10,4 @@ _**Database Requirements:**_
   * Queries under Employer class can modify/manipulate Employee entities
   * Queries under Employee class can only modify their own, individual entity
 
+_**UI Plan:**_
