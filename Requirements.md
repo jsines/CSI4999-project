@@ -19,3 +19,4 @@ _**Database Requirements:**_
   * Queries under Employee class can only modify their own individual selves, and their Time_Log data
 
 _**UI Plan:**_
+* The employeer will make accounts for their employees using the code they are given. 
