@@ -14,7 +14,7 @@ _**Database Requirements:**_
 * Database service: MySQL (run localy for presentations, though web service for specific demonstartive purposes)
   * Backend service to connect directly to database, frontend service used to add to/change database in real time
 * Total Classes: 4 (Business (employer), Employee, Projects, Time_Log)
-  * Class Hierarchy: Business > Employee
+  * Class Hierarchy: Business > Projects > Employee > Time_Log
   * Queries under Business class can modify/manipulate Employee, Project, and Time_Log entities
   * Queries under Employee class can only modify their own individual selves, and their Time_Log data
 
