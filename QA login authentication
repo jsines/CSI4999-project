@@ -1,0 +1,7 @@
+1. Can the user login in with user name and password
+2. Can the user reset thier password if it is forgotten?
+3. does the login required both a valid user name and password (users cannot bypass by not entering a password or by not entering a user name?)
+4. Is code vulnerable to SQL injection attack?
+5. Is code vulnerable to brute force attack? 
+6. can the user create a new user name and password?
+7. 
