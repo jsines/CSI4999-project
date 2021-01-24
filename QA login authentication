@@ -2,6 +2,8 @@
 2. Can the user reset thier password if it is forgotten?
 3. does the login required both a valid user name and password (users cannot bypass by not entering a password or by not entering a user name?)
 4. Is code vulnerable to SQL injection attack?
-5. Is code vulnerable to brute force attack? 
+5. Is code vulnerable to brute force attack both username and password? 
 6. can the user create a new user name and password?
-7. 
+7. Does the login notifiy the user if no connection to the database is present? 
+8. Any error codes should not compromise security, protection from enumeration attacks( invalid username OR password not just one or the other) 
+9. sign on name must be unique, two of the same username should not be able to exist. 
