@@ -5,37 +5,91 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Creation Page</title>
+    <!-- Not Working ATM <link rel="stylesheet" href="css/accountcreation.css"> 
+   -->
 </head>
+<style>
+    body {
+        background-color: skyblue;
+    }
+    
+    p {
+        font-size: 25px;
+    }
+    
+    h2 {
+        font-size: 40px;
+    }
+    
+    .info1 {
+        font-size: 15px;
+    }
+    
+    .fname {
+        font-size: 20px;
+        margin-bottom: 19px;
+    }
+    
+    .lname {
+        font-size: 20px;
+        margin-bottom: 19px;
+    }
+    
+    .email {
+        font-size: 20px;
+        margin-bottom: 19px;
+    }
+    
+    .pword {
+        font-size: 20px;
+        margin-bottom: 19px;
+    }
+    
+    .cpword {
+        font-size: 20px;
+        margin-bottom: 19px;
+    }
+    
+    .login {
+        margin-bottom: 19px;
+        font-size: 35px;
+    }
+    
+    .existing {
+        margin-bottom: 19px;
+        font-size: 23px;
+    }
+</style>
 
 <body>
     <div class="container">
         <div class="row">
             <div class="col1">
-                <h2>Create an Account</h2>
+                <h1>Create an Account</h1>
                 <p>Please Enter Valid Information to Create an Account: </p>
                 <form action="" method="post">
-                    <div class="info">
-                        <label>First Name</label>
+                    <div class="fname">
+                        <label>First Name: </label>
                         <input type="text" name="fname" class="info1" required> </div>
-                    <div class="info">
-                        <label>Last Name</label>
+                    <div class="lname">
+                        <label>Last Name: </label>
                         <input type="text" name="lname" class="info1" required> </div>
-                    <div class="info">
-                        <label>Email</label>
+                    <div class="email">
+                        <label>Email: </label>
                         <input type="email" name="email" class="info1" required> </div>
-                    <div class="info">
-                        <label>Password</label>
+                    <div class="pword">
+                        <label>Password: </label>
                         <input type="password" name="password" class="info1" required> </div>
-                    <div class="info">
-                        <label>Confirm Password</label>
+                    <div class="cpword">
+                        <label>Confirm Password:</label>
                         <input type="password" name="cpass" class="info1" required> </div>
-                    <div class="info">
-                        <input type="submit" name="submit" class="btn" value="Submit" </div>
-                        <p>Login with existing account.</p>
+                    <div class="login">
+                        <input type="submit" name="login" class="btn btn-primary btn-lg" value="Create Account" </div> </div>
+                    <div class="existing"> <a href="">Login with existing account.</a> </div>
                 </form>
-                </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,50 @@
+ body {
+     background-color: skyblue;
+ }
+ 
+ p {
+     font-size: 25px;
+ }
+ 
+ h2 {
+     font-size: 40px;
+ }
+ 
+ .info1 {
+     font-size: 15px;
+ }
+ 
+ .fname {
+     font-size: 20px;
+     margin-bottom: 19px;
+ }
+ 
+ .lname {
+     font-size: 20px;
+     margin-bottom: 19px;
+ }
+ 
+ .email {
+     font-size: 20px;
+     margin-bottom: 19px;
+ }
+ 
+ .pword {
+     font-size: 20px;
+     margin-bottom: 19px;
+ }
+ 
+ .cpword {
+     font-size: 20px;
+     margin-bottom: 19px;
+ }
+ 
+ .login {
+     margin-bottom: 19px;
+     font-size: 35px;
+ }
+ 
+ .existing {
+     margin-bottom: 19px;
+     font-size: 23px;
+ }
