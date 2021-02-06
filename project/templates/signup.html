@@ -6,6 +6,13 @@
         <div class="col1">
             <h2>Create an Account</h2>
             <p>Please Enter Valid Information to Create an Account: </p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="notification">
+                    {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                <div>
+            {% endif %}
+            {% endwith %}
             <form action="/signup" method="POST">
                 <div class="info">
                     <label>Name</label>

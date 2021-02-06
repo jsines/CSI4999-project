@@ -11,26 +11,32 @@ from flask_login import (
 )
 
 db = SQLAlchemy()
-app = Flask(__name__)
-app.config['SECRET_KEY'] = ''
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+def create_app():
+	app = Flask(__name__)
+	app.config['SECRET_KEY'] = os.urandom(24)
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
-db.init_app(app)
+	db.init_app(app)
 
-from .auth_bp import auth as auth_blueprint
-app.register_blueprint(auth_blueprint)
+	# Login/Session management
+	login_manager = LoginManager()
+	login_manager.login_view = 'auth.login'
+	login_manager.init_app(app)
+
+	from .models import User
+
+	@login_manager.user_loader
+	def load_user(user_id):
+			return User.query.get(int(user_id))
+
+	# Loading in routing blueprints
+	from .auth_bp import auth as auth_blueprint
+	app.register_blueprint(auth_blueprint)
+	from .main_bp import main as main_blueprint
+	app.register_blueprint(main_blueprint)
+
+	return app
 
 
-from .main_bp import main as main_blueprint
-app.register_blueprint(main_blueprint)
-
-# Session Management
-#login_manager = LoginManager()
-#login_manager.init_app(app)
-
-#@app.route("/login", methods=['GET', 'POST'])
-#def login():
-
-
-if __name__ == "__main__":
-	app.run()
+#if __name__ == "__main__":
+#	app.run()
