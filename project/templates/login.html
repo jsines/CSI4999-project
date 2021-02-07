@@ -3,7 +3,8 @@
 <div class="container">
     <div class="row">
         <div class="col1">
-            <h1>Enter Email and Password to Login:</h1>
+             <h1>Login: </h1> {% with messages = get_flashed_messages() %} {% if messages %}
+            <div class="notification"> {{ messages[0] }} </div> {% endif %} {% endwith %}
             <form action="/login" method="POST">
                 <div class="info">
                     <label>Email: </label>
@@ -12,8 +13,10 @@
                     <label>Password: </label>
                     <input type="password" name="password" class="info1" required> </div>
                 <div class="info">
-                    <input type="submit" name="submit" class="btn" value="Login"> </div>
-            </form>
+                    <label class="checkbox">
+                        <input type="checkbox" name="remember"> Remember Me </label>
+                    <div class="info">
+                        <input type="submit" name="submit" class="btn" value="Submit"> </div>
+            </form> <a href="{{ url_for('auth.forgotpassword') }}">Forgot password?</a> </div>
         </div>
-    </div>
 </div> {% endblock %}
