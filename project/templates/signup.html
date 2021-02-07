@@ -1,35 +1,28 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="stylesheet.css">
 <div class="container">
     <div class="row">
         <div class="col1">
-            <h2>Create an Account</h2>
+            <h1>Create an Account</h1>
             <p>Please Enter Valid Information to Create an Account: </p>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="notification">
-                    {{ messages[0] }}.</a>.
-                <div>
-            {% endif %}
-            {% endwith %}
             <form action="/signup" method="POST">
                 <div class="info">
-                    <label>Name</label>
+                    <label>Name: </label>
                     <input type="text" name="name" class="info1" required> </div>
                 <div class="info">
-                    <label>Email</label>
+                    <label>Email: </label>
                     <input type="email" name="email" class="info1" required> </div>
                 <div class="info">
-                    <label>Password</label>
+                    <label>Password: </label>
                     <input type="password" name="password" class="info1" required> </div>
                 <div class="info">
-                    <label>Confirm Password</label>
-                    <input type="password" name="cpassword" class="info1" required> </div>
+                    <label>Confirm Password: </label>
+                    <input type="password" name="cpass" class="info1" required> </div>
                 <div class="info">
-                    <input type="submit" name="submit" class="btn" value="Submit"> </div>
+                    <input type="submit" name="submit" class="btn" value="Submit"> 
+                    <a href="login.html">Login with Existing Account</a>
+                    </div>
             </form>
         </div>
     </div>
-</div>
-{% endblock %}
+</div> {% endblock %}
