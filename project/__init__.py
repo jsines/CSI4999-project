@@ -9,14 +9,23 @@ from flask_login import (
 	login_user,
 	logout_user,
 )
+from flask_mail import Mail, Message
 
 db = SQLAlchemy()
+mail = Mail()
 def create_app():
 	app = Flask(__name__)
 	app.config['SECRET_KEY'] = os.urandom(24)
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-
 	db.init_app(app)
+
+	app.config['MAIL_SERVER']='smtp.gmail.com'
+	app.config['MAIL_PORT'] = 465
+	app.config['MAIL_USERNAME'] = 'dcaatimemamangement@gmail.com'
+	app.config['MAIL_PASSWORD'] = os.environ.get('MAILPWD')
+	app.config['MAIL_USE_TLS'] = False
+	app.config['MAIL_USE_SSL'] = True
+	mail.init_app(app)
 
 	# Login/Session management
 	login_manager = LoginManager()
@@ -36,7 +45,3 @@ def create_app():
 	app.register_blueprint(main_blueprint)
 
 	return app
-
-
-#if __name__ == "__main__":
-#	app.run()
