@@ -1,1 +1,16 @@
+#Sharable Link to view DB on Lucidchart (as seen on ppt slides)
+
+https://lucid.app/lucidchart/invitations/accept/04bfe377-7201-4c10-8e28-edea210726e6
+
+
+#User Stories pertaining to design decisions
+
+As an employee/employer,  I need to be able to create an account and modify my data if needed in the future
+-->Created: “Employee” table with attributes pertaining to personal information and company relationship information.
+
+As an employee/employer, I need to be able to create projects and check project status
+-->Created: “Project” table with attributes pertaining to needs as mentioned
+
+As an employee/employer, I need to be able to create time logs for projects and view them accordingly
+-->Created: “TimeLog” for storing current date and allowing relevant information to be added and stored for future viewing.
 
