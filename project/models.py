@@ -15,7 +15,7 @@ class Employee(db.Model):
 	firstName = db.Column(db.String(100))
 	lastName = db.Column(db.String(100))
 	jobTitle = db.Column(db.String(100))
-	payRate = db.Column(db.Double)
+	payRate = db.Column(db.Float)
 	
 #this creates Project table
 class Project(db.Model):
@@ -27,6 +27,6 @@ class Project(db.Model):
 class TimeLog(db.Model):
 	projectID = db.Column(db.Integer, primary_key=True)
 	employeeID = db.Column(db.Integer)
-	currentTime = db.Column(db.date)
+	currentTime = db.Column(db.Date)
 	time = db.Column(db.Integer)
 	
