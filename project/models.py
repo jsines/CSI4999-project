@@ -13,20 +13,20 @@ class User(UserMixin, db.Model):
 class Employee(db.Model):
 	employeeID = db.Column(db.Integer, primary_key=True, unique=True)
 	firstName = db.Column(db.String(100))
-	lastName = db.Coulmn(db.String(100))
-	jobTitle = db.Coulmn(db.String(100))
-	payRate = db.Coulmn(db.Double)
+	lastName = db.Column(db.String(100))
+	jobTitle = db.Column(db.String(100))
+	payRate = db.Column(db.Double)
 	
 #this creates Project table
 class Project(db.Model):
-	projectID = db.Coulmn(db.Integer, primary_key=True, unique=True)
-	projectName = db.Coulmn(db.String(100))
-	projectOngoing = db.Coumn(db.Boolean)
+	projectID = db.Column(db.Integer, primary_key=True, unique=True)
+	projectName = db.Column(db.String(100))
+	projectOngoing = db.Column(db.Boolean)
 	
 #this creates TimeLog table 
 class TimeLog(db.Model):
-	projectID = db.Coulmn(db.Integer, primary_key=True)
-	employeeID = db.Coulmn(db.Integer)
-	currentTime = db.Coulmn(db.date)
-	time = db.Coulmn(db.Integer)
+	projectID = db.Column(db.Integer, primary_key=True)
+	employeeID = db.Column(db.Integer)
+	currentTime = db.Column(db.date)
+	time = db.Column(db.Integer)
 	
