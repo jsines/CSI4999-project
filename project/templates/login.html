@@ -1,22 +1,23 @@
-{% extends "base.html" %} {% block content %}
-<link rel="stylesheet" href="/static/stylesheet.css" />
+{% extends "base2.html" %} {% block content %}
+<link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
     <div class="row">
         <div class="col1">
-             <h1>Login: </h1> {% with messages = get_flashed_messages() %} {% if messages %}
+            <h1>Login</h1> {% with messages = get_flashed_messages() %} {% if messages %}
             <div class="notification"> {{ messages[0] }} </div> {% endif %} {% endwith %}
             <form action="/login" method="POST">
-                <div class="info">
-                    <label>Email: </label>
-                    <input type="email" name="email" class="info1" required> </div>
-                <div class="info">
-                    <label>Password: </label>
-                    <input type="password" name="password" class="info1" required> </div>
-                <div class="info">
+                <div class="form-group">
+                    <label for="email">Email: </label>
+                    <input type="email" name="email" class="form-control" placeholder="Email" required> </div>
+                <div class="form-group">
+                    <label for="pwd">Password: </label>
+                    <input type="password" name="password" class="form-control" placeholder="password" required> </div>
+                <div class="form-group">
                     <label class="checkbox">
-                        <input type="checkbox" name="remember"> Remember Me </label>
-                    <div class="info">
-                        <input type="submit" name="submit" class="btn" value="Submit"> </div>
+                        <input type="checkbox" name="remember" class="form-check-input"> Remember Me </label>
+                    <div class="form-group">
+                        <button type="button" name="submit" class="btn btn-primary" value="Submit">Login</button>
+                    </div>
             </form> <a href="{{ url_for('auth.forgotpassword') }}">Forgot password?</a> </div>
         </div>
-</div> {% endblock %}
+    </div> {% endblock %}
