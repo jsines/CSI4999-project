@@ -2,7 +2,7 @@ body {
     background-color: lightblue;
 }
 
-.navbar-item {
+.nav-item {
     font-size: 20px;
     font-family: sans-serif;
 }
@@ -25,7 +25,11 @@ h1 {
     font-family: sans-serif;
 }
 
-p {
-    font-size: 35px;
+.paragraph {
+    font-size: 20px;
     font-family: sans-serif;
+}
+
+.form-group {
+    font-size: 20px;
 }
