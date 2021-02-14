@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col1">
+            <h2>Invite an Employee</h2>
+            <p>Please Enter Employee Information to Send an Invitation: </p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="notification">
+                    {{ messages[0] }}.</a>.
+                <div>
+            {% endif %}
+            {% endwith %}
+            <form action="/invite" method="POST">
+                <div class="info">
+                    <label>Name</label>
+                    <input type="text" name="name" class="info1" required> </div>
+                <div class="info">
+                    <label>Email</label>
+                    <input type="email" name="email" class="info1" required> </div>
+                <div class="info">
+                    <input type="submit" name="submit" class="btn" value="Submit"> </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
