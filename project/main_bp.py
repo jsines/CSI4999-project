@@ -46,7 +46,7 @@ def invite_post():
 	db.session.add(new_user)
 	db.session.commit()
 	user_entry = User.query.filter_by(email=email).first()
-	new_employee = Employee(user_id=user_entry.id, name=name, jobTitle='Fake Title', payRate=9.00)
+	new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, jobTitle='Fake Title', payRate=9.00)
 	db.session.add(new_employee)
 	db.session.commit()
 	

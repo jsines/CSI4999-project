@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
 #this creates Employee table
 class Employee(db.Model):
 	employeeID = db.Column(db.Integer, primary_key=True, unique=True)
+	company_id = db.Column(db.Integer)
 	user_id = db.Column(db.Integer, unique=True)
 	name = db.Column(db.String(1000))
 	jobTitle = db.Column(db.String(100))
