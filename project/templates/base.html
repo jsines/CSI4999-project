@@ -29,6 +29,11 @@
                                 Sign Up
                             </a>
                             {% endif %}
+                            {% if current_user.is_authenticated and not current_user.is_employee %}
+                            <a href="{{ url_for('main.invite') }}" class="navbar-item">
+                                Invite
+                            </a>
+                            {% endif %}
                             {% if current_user.is_authenticated %}
                             <a href="{{ url_for('auth.logout') }}" class="navbar-item">
                                 Logout
