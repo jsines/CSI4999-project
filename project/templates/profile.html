@@ -1,7 +1,5 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
+    <link rel="stylesheet" href='/static/stylesheet.css' />
 <h1 class="title">
-  Welcome, user!
-</h1>
-{% endblock %}
+  Welcome, {{ name }}!
+</h1> {% endblock %}
