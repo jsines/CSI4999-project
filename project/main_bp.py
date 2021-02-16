@@ -1,9 +1,9 @@
-import string, random
+import string, random, datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
-from .models import User, Employee, Project
+from .models import User, Employee, Project, TimeLog
 from . import db, mail
 
 main = Blueprint('main', __name__)
@@ -12,6 +12,20 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     return render_template('index.html')
+
+@main.route('/timelogpage')
+def timelog():
+    rows = TimeLog.query.all()
+    return render_template('timelogpage.html', title='Overview', rows=rows)
+
+@main.route('/add_time', methods=["GET", "POST"])
+@login_required
+def add_time():
+    time_log_var1 = TimeLog(projectID=request.form.get("projectID"), employeeID=request.form.get("employeeID"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    db.session.add(time_log_var1)
+    db.session.commit()
+    return render_template('add_time.html')
+
 
 
 @main.route('/profile')
