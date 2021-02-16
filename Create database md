@@ -1,0 +1,27 @@
+CREATE TABLE `Company` (
+  `Company_ID` int,
+  `Company_name` String
+);
+
+CREATE TABLE `Employee` (
+  `Employee_ID` int,
+  `Company_ID` int,
+  `First_name` String,
+  `Last_name` String,
+  `Job_title` String,
+  `Pay_rate` double
+);
+
+CREATE TABLE `TimeLog` (
+  `Project_ID` int,
+  `Employee_ID` int,
+  `Current_Time` date,
+  `Time` int
+);
+
+CREATE TABLE `Project` (
+  `Project_ID` int,
+  `Project_name` String,
+  `Project_ongoing` boolean,
+  `Company_ID` int
+);
