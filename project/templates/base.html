@@ -54,8 +54,18 @@
                 </li> 
                 {% endif %}
                 {% if current_user.is_authenticated %}
-                <li class="nav-item"> 
-                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a> 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.timelog') }}">Time Logs</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.add_time') }}">Add Time Log</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                 </li>
                 {% endif %}
             </ul>
