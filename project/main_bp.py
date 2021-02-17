@@ -66,7 +66,7 @@ def invite_post():
     db.session.add(new_user)
     db.session.commit()
     user_entry = User.query.filter_by(email=email).first()
-    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, jobTitle='Fake Title',
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle='Fake Title',
                             payRate=9.00)
     db.session.add(new_employee)
     db.session.commit()
@@ -77,6 +77,14 @@ def invite_post():
     mail.send(msg)
 
     return redirect(url_for('main.profile'))
+
+@main.route('/employees')
+@login_required
+def employees():
+	if current_user.is_employee:
+		redirect(url_for('main.profile'))
+	employees = Employee.query.filter_by(company_id=current_user.id)
+	return render_template('employees.html', listOfEmployees=employees)
 
 
 # creates
