@@ -16,6 +16,7 @@ class Employee(db.Model):
 	company_id = db.Column(db.Integer)
 	user_id = db.Column(db.Integer, unique=True)
 	name = db.Column(db.String(1000))
+	emp_email = db.Column(db.String(100), unique=True)
 	jobTitle = db.Column(db.String(100))
 	payRate = db.Column(db.Float)
 	

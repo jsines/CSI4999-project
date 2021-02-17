@@ -50,7 +50,7 @@
                 {% endif %} 
                 {% if current_user.is_authenticated and not current_user.is_employee %}
                 <li class="nav-item"> 
-                    <a class="nav-link" href="{{ url_for('main.invite') }}">Invite</a> 
+                    <a class="nav-link" href="{{ url_for('main.employees') }}">Employees</a> 
                 </li> 
                 {% endif %}
                 {% if current_user.is_authenticated %}
