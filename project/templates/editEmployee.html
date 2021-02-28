@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="/static/stylesheet.css" />
+<div class="container">
+    <div class="row">
+        <div class="col1">
+            <h1>Edit Employee Information</h1>
+            <div class="form-group">
+                <label for="payrate">Pay Rate:</label>
+                <input type="number" name="payrate" class="form-control" placeholder="Enter New Pay Rate"> </div>
+            <div class="form-group">
+                <label for="ID">Employee ID:</label>
+                <input type="number" name="ID" class="form-control" placeholder="Enter New Employee ID"> </div>
+            <div class="form-group">
+                <label for="title">Job Title:</label>
+                <input type="text" name="title" class="form-control" placeholder="Enter New Job Title">
+            </div>
+            <div class="form-group">
+                <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit Changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endblock %}
