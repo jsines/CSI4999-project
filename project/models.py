@@ -23,6 +23,7 @@ class Employee(db.Model):
 #this creates Project table
 class Project(db.Model):
 	projectID = db.Column(db.Integer, primary_key=True, unique=True)
+	companyID = db.Column(db.Integer)
 	projectName = db.Column(db.String(100))
 	projectOngoing = db.Column(db.Boolean)
 	
@@ -33,3 +34,10 @@ class TimeLog(db.Model):
 	currentTime = db.Column(db.Date)
 	time = db.Column(db.Integer)
 	
+class ExpenseLog(db.Model):
+	expenseLogID = db.Column(db.Integer, primary_key=True)
+	projectID = db.Column(db.Integer)
+	employeeID = db.Column(db.Integer)
+	expenseName = db.Column(db.String(1000))
+	expenseAmount = db.Column(db.Numeric(13,2))
+	expenseDescription = db.Column(db.String(10000))

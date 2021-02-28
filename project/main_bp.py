@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
-from .models import User, Employee, Project, TimeLog
+from .models import User, Employee, Project, TimeLog, ExpenseLog
 from . import db, mail
 
 main = Blueprint('main', __name__)
@@ -26,6 +26,35 @@ def add_time():
     db.session.commit()
     return render_template('add_time.html')
 
+@main.route('/addexpense')
+@login_required
+def addexpense():
+	if not current_user.is_employee:
+		return redirect(url_for('main.profile'))
+	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+
+	projects = Project.query.filter_by(companyID=this_employee.company_id)
+	return render_template('addexpense.html', projectsList=projects)
+
+
+@main.route('/addexpense', methods=['POST'])
+@login_required
+def addexpense_post():
+	if not current_user.is_employee:
+		return redirect(url_for('main.profile'))
+	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+	this_project = Project.query.filter_by(companyID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+
+	e_projectid = this_project.projectID
+	e_employeeid = this_employee.employeeID
+	e_name=request.form.get("expenseName")
+	e_amount=request.form.get("expenseAmount")
+	e_description=request.form.get("expenseDescription")
+	
+	expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
+	db.session.add(expense_entry)
+	db.session.commit()
+	return redirect(url_for('main.profile'))
 
 
 @main.route('/profile')
@@ -94,7 +123,7 @@ def create_project():
     if request.form:
         exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
         if not exists:
-            project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True)
+            project_name_var = Project(companyID=current_user.id, projectName=request.form.get("projectNameForm"), projectOngoing=True)
             db.session.add(project_name_var)
             db.session.commit()
     # error message
