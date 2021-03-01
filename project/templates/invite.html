@@ -1,23 +1,29 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% block content %}
 <link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
     <div class="row">
         <div class="col1">
             <h1>Invite an Employee</h1>
-            <p class="paragraph">Please Enter Employee Information to Send an Invitation: </p> {% with messages = get_flashed_messages() %} {% if messages %}
-            <div class="notification"> {{ messages[0] }}.</a>.
-                <div> {% endif %} {% endwith %}
-                    <form action="/invite" method="POST">
-                        <div class="form-group">
-                            <label for="name">Name: </label>
-                            <input type="text" name="name" class="form-control" placeholder="Enter name of Employee" required> </div>
-                        <div class="form-group">
-                            <label for="email">Email: </label>
-                            <input type="email" name="email" class="form-control" placeholder="Email Address" required> </div>
-                        <div class="form-group">
-                            <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit</button>
-                        </div>
-                    </form>
-                </div>
+            <p class="paragraph">Please Enter Employee Information to Send an Invitation: </p> 
+            {% with messages = get_flashed_messages() %} 
+            {% if messages %}
+            <div class="notification"> 
+                {{ messages[0] }}.
             </div>
-        </div> {% endblock %}
+            {% endif %} {% endwith %}
+            <form action="/invite" method="POST">
+                <div class="form-group">
+                    <label for="name">Name: </label>
+                    <input type="text" name="name" class="form-control" placeholder="Name of Employee" required> </div>
+                <div class="form-group">
+                    <label for="email">Email: </label>
+                    <input type="email" name="email" class="form-control" placeholder="Email Address" required> </div>
+                <div class="form-group">
+                    <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
+{% endblock %}

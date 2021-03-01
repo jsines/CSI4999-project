@@ -1,4 +1,4 @@
-import string, random, datetime
+import string, random, datetime 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_mail import Message
@@ -13,18 +13,15 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
-
 @main.route('/timelogpage')
 def timelog():
     rows = TimeLog.query.all()
     return render_template('timelogpage.html', title='Overview', rows=rows)
 
-
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
 def add_time():
-    time_log_var1 = TimeLog(projectID=request.form.get("projectID"), employeeID=request.form.get("employeeID"),
-                            currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    time_log_var1 = TimeLog(projectID=request.form.get("projectID"), employeeID=request.form.get("employeeID"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
     db.session.add(time_log_var1)
     db.session.commit()
     return render_template('add_time.html')
@@ -68,8 +65,7 @@ def invite_post():
     db.session.add(new_user)
     db.session.commit()
     user_entry = User.query.filter_by(email=email).first()
-    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email,
-                            jobTitle='Fake Title',
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle='Fake Title',
                             payRate=9.00)
     db.session.add(new_employee)
     db.session.commit()
@@ -82,13 +78,7 @@ def invite_post():
     return redirect(url_for('main.profile'))
 
 
-@main.route('/employees')
-@login_required
-def employees():
-    if current_user.is_employee:
-        redirect(url_for('main.profile'))
-    employees = Employee.query.filter_by(company_id=current_user.id)
-    return render_template('employees.html', listOfEmployees=employees)
+
 
 
 # Edit Employee Info
@@ -105,6 +95,13 @@ def editEmployee(x=None):
 
     db.session.commit()
     return render_template('editEmployee.html', x = x)
+@main.route('/employees')
+@login_required
+def employees():
+	if current_user.is_employee:
+		redirect(url_for('main.profile'))
+	employees = Employee.query.filter_by(company_id=current_user.id)
+	return render_template('employees.html', listOfEmployees=employees)
 
 
 # creates

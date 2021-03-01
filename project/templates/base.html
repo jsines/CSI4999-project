@@ -15,18 +15,60 @@
 
 <body>
     <div class="page-header">
-        <h1>
-        DCAA Compliant Time Management Application</h1> </div>
+        <h1>DCAA Compliant Time Management Application</h1> 
+    </div>
     <div class="container">
         <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
             <ul class="nav">
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('main.index') }}">Home</a> </li> {% if current_user.is_authenticated %}
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a> </li> {% endif %} {% if not current_user.is_authenticated %}
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a> </li> {% endif %} {% if not current_user.is_authenticated %}
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a> </li> {% endif %} {% if current_user.is_authenticated %}
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('main.invite') }}">Invite
-                </a> </li> {% endif %} {% if current_user.is_authenticated %}
-                <li class="nav-item"> <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a> </li> {% endif %} </ul>
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.index') }}">Home</a> 
+                </li> 
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a> 
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.view_projects') }}">View Projects</a>
+                    </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.create_project') }}">Create Project</a>
+                    </li>
+                {% endif %}
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                </li> 
+                {% endif %} 
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a> 
+                </li> 
+                {% endif %} 
+                {% if current_user.is_authenticated and not current_user.is_employee %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.employees') }}">Employees</a> 
+                </li> 
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.timelog') }}">Time Logs</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.add_time') }}">Add Time Log</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
         </nav>
         <div>
             <div> {% block content %} {% endblock %} </div>
