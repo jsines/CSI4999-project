@@ -52,7 +52,7 @@ def addexpense():
 		return redirect(url_for('main.profile'))
 	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
 
-	projects = Project.query.filter_by(companyID=this_employee.company_id)
+	projects = Project.query.filter_by(EmployerID=this_employee.company_id)
 	return render_template('addexpense.html', projectsList=projects)
 
 
@@ -62,7 +62,7 @@ def addexpense_post():
 	if not current_user.is_employee:
 		return redirect(url_for('main.profile'))
 	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-	this_project = Project.query.filter_by(companyID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+	this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
 
 	e_projectid = this_project.projectID
 	e_employeeid = this_employee.employeeID

@@ -23,7 +23,6 @@ class Employee(db.Model):
 #this creates Project table
 class Project(db.Model):
 	projectID = db.Column(db.Integer, primary_key=True, unique=True)
-	companyID = db.Column(db.Integer)
 	projectName = db.Column(db.String(100))
 	projectOngoing = db.Column(db.Boolean)
 	EmployerID = db.Column(db.Integer)
