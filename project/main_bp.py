@@ -1,9 +1,10 @@
 import string, random, datetime 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from sqlalchemy import text
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
-from .models import User, Employee, Project, TimeLog
+from .models import User, Employee, Project, TimeLog, Assignments
 from . import db, mail
 
 main = Blueprint('main', __name__)
@@ -15,17 +16,31 @@ def index():
 
 @main.route('/timelogpage')
 def timelog():
-    rows = TimeLog.query.all()
-    return render_template('timelogpage.html', title='Overview', rows=rows)
+    row = TimeLog.query.all()
+    return render_template('timelogpage.html', title='Overview', row=row)
 
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
 def add_time():
-    time_log_var1 = TimeLog(projectID=request.form.get("projectID"), employeeID=request.form.get("employeeID"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
-    db.session.add(time_log_var1)
-    db.session.commit()
-    return render_template('add_time.html')
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
+    if not request.form.get("timeworked") == None:
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+        db.session.add(tl_var)
+        db.session.commit()
+    return render_template('add_time.html', row=row)
 
+@main.route('/ManageProjects', methods=["GET", "POST"])
+@login_required
+def ManageProjects():
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+
+    if not request.form.get("add_employee_form") == None:
+        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=request.form.get("projectslist"))
+        db.session.add(employee_id_var)
+        db.session.commit()
+
+    return render_template('/ManageProjects.html', Tresult=Tresult)
 
 @main.route('/profile')
 @login_required
@@ -77,24 +92,6 @@ def invite_post():
 
     return redirect(url_for('main.profile'))
 
-
-
-
-
-# Edit Employee Info
-@main.route('/editEmployee/<x>', methods=["GET", "POST"])
-@login_required
-def editEmployee(x=None):
-    payrate = request.form.get('payrate')
-    name = request.form.get('name')
-    title = request.form.get('title')
-    user = Employee.query.filter_by(emp_email= x).first()
-    user.payRate = payrate
-    user.name = name
-    user.jobTitle = title
-
-    db.session.commit()
-    return render_template('editEmployee.html', x = x)
 @main.route('/employees')
 @login_required
 def employees():
@@ -104,14 +101,14 @@ def employees():
 	return render_template('employees.html', listOfEmployees=employees)
 
 
-# creates
+# creates a new project
 @main.route('/createProject', methods=["GET", "POST"])
 @login_required
 def create_project():
     if request.form:
         exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
         if not exists:
-            project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True)
+            project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True, EmployerID=current_user.id)
             db.session.add(project_name_var)
             db.session.commit()
     # error message
@@ -122,5 +119,5 @@ def create_project():
 @main.route('/viewProjects', methods=["GET", "POST"])
 @login_required
 def view_projects():
-    projects = Project.query.all()
+    projects = Project.query.filter_by(EmployerID=current_user.id)
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)

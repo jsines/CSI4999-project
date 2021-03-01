@@ -27,45 +27,33 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12">
+
+	</div class="col-md-6">
+		<div class="col-md-6">
 			<form method="POST" action="/add_time">
 				<div class="form-group">
-
-					<label for="timelogname">
-						Project Id
-					</label>
-					<input type="text" class="form-control" name="projectID">
-
-
-					<label for="Employeename">
-						Employee ID
-					</label>
-					<input type="text" class="form-control" name="employeeID">
-
-
-
-
-
 					<label for="time worked">
-						Time Worked (In Hours)
+						time worked (in hours)
 					</label>
 					<input type="text" class="form-control" name="timeworked">
 				</div>
-
-
+				<div class="col-md-6">
+		<select name="projectslist" id="projectslist">
+			{% for row in row %}
+  				<option value={{ row.projectName }}>{{ row.projectName }}</option>
+			{% endfor %}
+		</select>
+		</div>
 				<button type="submit" class="btn btn-primary">
 					Submit
 				</button>
-
 			</form>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
+	
+    
+	
+	
 
-		</div>
-	</div>
-</div>
 
 
   </body>

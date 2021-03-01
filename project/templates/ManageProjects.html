@@ -1,7 +1,8 @@
 {% extends "base.html" %} {% block content %} 
-<html lang="en">
 
+<html lang="en">
   <head>
+    <title>Add Employee</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,57 +12,42 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/static/stylesheet.css" /> </head>
-
   </head>
   <body>
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			 
-			<h1>Time log</h1>
-		</div>
-	</div>
     <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
-
+			<div class="page-header">
+				<h1>
+					Add Employee
+				</h1>
+			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							TimeLogID
-						</th>
-						<th>
-							Project Name
-						</th>
-						<th>
-							Current Date
-						</th>
-						<th>
-							Time Worked (hours)
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						{% for row in row %}
-    				<tr>
-        				<td>{{ row.TimeLogID }}</td>
-        				<td>{{ row.projectName}}</td>
-						<td>{{ row.currentTime}}</td>
-						<td>{{ row.time}}</td>
-    				</tr>
-    					{% endfor %}
-					</tr>
-				</tbody>
-			</table>
+
+<div class="col-md-12">
+		<div class="col-md-6">
+			<form method="POST" action="/ManageProjects">
+				<div class="form-group">
+					<label for="Employee name">
+						Add employee by ID
+					</label>
+					<input type="text" class="form-control" name="add_employee_form">
+				</div>
+					<div class="col-md-6">
+					 	<select name="projectslist" id="projectslist">
+							{% for Tresult in Tresult %}
+								<option value={{ Tresult.projectName }}>{{ Tresult.projectName }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				<button type="submit" class="btn btn-primary">
+					add
+				</button>
+			</form>
 		</div>
 	</div>
-</div>
   </body>
 </html>
 {% endblock %}
