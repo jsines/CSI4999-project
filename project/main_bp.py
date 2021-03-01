@@ -1,14 +1,129 @@
-from flask import Blueprint, render_template
+import string, random, datetime
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from . import db
+from flask_mail import Message
+from werkzeug.security import generate_password_hash
+from .models import User, Employee, Project, TimeLog
+from . import db, mail
 
 main = Blueprint('main', __name__)
 
+
 @main.route('/')
 def index():
-	return render_template('index.html')
+    return render_template('index.html')
+
+
+@main.route('/timelogpage')
+def timelog():
+    rows = TimeLog.query.all()
+    return render_template('timelogpage.html', title='Overview', rows=rows)
+
+
+@main.route('/add_time', methods=["GET", "POST"])
+@login_required
+def add_time():
+    time_log_var1 = TimeLog(projectID=request.form.get("projectID"), employeeID=request.form.get("employeeID"),
+                            currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    db.session.add(time_log_var1)
+    db.session.commit()
+    return render_template('add_time.html')
+
 
 @main.route('/profile')
 @login_required
 def profile():
-	return render_template('profile.html', name=current_user.name)
+    return render_template('profile.html', name=current_user.name)
+
+
+@main.route('/invite')
+@login_required
+def invite():
+    return render_template('invite.html')
+
+
+@main.route('/invite', methods=['POST'])
+@login_required
+def invite_post():
+    # Find data from form
+    email = request.form.get('email')
+    name = request.form.get('name')
+
+    # Check if user exists already
+    user = User.query.filter_by(email=email).first()
+    if user:
+        flash('A user with that email already exists!')
+        return redirect(url_for('main.invite'))
+
+    # Generate temporary password
+    def generate_random_password(length):
+        alphabet = string.ascii_uppercase + string.digits
+        return ''.join(random.choice(alphabet) for i in range(length))
+
+    temporary_password = generate_random_password(10)
+
+    # Add user,employee to database
+    new_user = User(email=email, name=name, password=generate_password_hash(temporary_password, method='sha256'),
+                    needs_reset=True, is_employee=True)
+    db.session.add(new_user)
+    db.session.commit()
+    user_entry = User.query.filter_by(email=email).first()
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email,
+                            jobTitle='Fake Title',
+                            payRate=9.00)
+    db.session.add(new_employee)
+    db.session.commit()
+
+    # Email user that their account has been created
+    msg = Message('Account Created', sender='dcaatimemamangement@gmail.com', recipients=[email])
+    msg.body = "An account has been created for you. Your temporary password is " + temporary_password + "."
+    mail.send(msg)
+
+    return redirect(url_for('main.profile'))
+
+
+@main.route('/employees')
+@login_required
+def employees():
+    if current_user.is_employee:
+        redirect(url_for('main.profile'))
+    employees = Employee.query.filter_by(company_id=current_user.id)
+    return render_template('employees.html', listOfEmployees=employees)
+
+
+# Edit Employee Info
+@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@login_required
+def editEmployee(x=None):
+    payrate = request.form.get('payrate')
+    name = request.form.get('name')
+    title = request.form.get('title')
+    user = Employee.query.filter_by(emp_email= x).first()
+    user.payRate = payrate
+    user.name = name
+    user.jobTitle = title
+
+    db.session.commit()
+    return render_template('editEmployee.html', x = x)
+
+
+# creates
+@main.route('/createProject', methods=["GET", "POST"])
+@login_required
+def create_project():
+    if request.form:
+        exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
+        if not exists:
+            project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True)
+            db.session.add(project_name_var)
+            db.session.commit()
+    # error message
+    return render_template('/createProject.html', name=current_user.name)
+
+
+# creates
+@main.route('/viewProjects', methods=["GET", "POST"])
+@login_required
+def view_projects():
+    projects = Project.query.all()
+    return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
