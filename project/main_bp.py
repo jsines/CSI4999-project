@@ -4,11 +4,7 @@ from sqlalchemy import text
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
-<<<<<<< HEAD
-from .models import User, Employee, Project, TimeLog, ExpenseLog
-=======
-from .models import User, Employee, Project, TimeLog, Assignments
->>>>>>> main
+from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments
 from . import db, mail
 
 main = Blueprint('main', __name__)
