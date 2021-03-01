@@ -12,6 +12,6 @@
         <tr>
             <td>{{employee.name}}</td>
             <td>{{employee.emp_email}}</td>
-            <td> <a href=\ "#\" class=\ "w3-button w3-light-grey\">View</a> <a href=\ "editEmployee.html" class=\ "w3-button w3-light-grey\">Manage</a> </td>
+            <td> <a href="#">View</a> <a href="{{ url_for('main.editEmployee', x = employee.emp_email) }}">Manage</a> </td>
         </tr> {% endfor %} </table>
 </div> {% endblock %}
