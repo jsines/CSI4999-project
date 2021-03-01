@@ -1,0 +1,123 @@
+import string, random, datetime 
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from sqlalchemy import text
+from flask_login import login_required, current_user
+from flask_mail import Message
+from werkzeug.security import generate_password_hash
+from .models import User, Employee, Project, TimeLog, Assignments
+from . import db, mail
+
+main = Blueprint('main', __name__)
+
+
+@main.route('/')
+def index():
+    return render_template('index.html')
+
+@main.route('/timelogpage')
+def timelog():
+    row = TimeLog.query.all()
+    return render_template('timelogpage.html', title='Overview', row=row)
+
+@main.route('/add_time', methods=["GET", "POST"])
+@login_required
+def add_time():
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
+    if not request.form.get("timeworked") == None:
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+        db.session.add(tl_var)
+        db.session.commit()
+    return render_template('add_time.html', row=row)
+
+@main.route('/ManageProjects', methods=["GET", "POST"])
+@login_required
+def ManageProjects():
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+
+    if not request.form.get("add_employee_form") == None:
+        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=request.form.get("projectslist"))
+        db.session.add(employee_id_var)
+        db.session.commit()
+
+    return render_template('/ManageProjects.html', Tresult=Tresult)
+
+@main.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', name=current_user.name)
+
+
+@main.route('/invite')
+@login_required
+def invite():
+    return render_template('invite.html')
+
+
+@main.route('/invite', methods=['POST'])
+@login_required
+def invite_post():
+    # Find data from form
+    email = request.form.get('email')
+    name = request.form.get('name')
+
+    # Check if user exists already
+    user = User.query.filter_by(email=email).first()
+    if user:
+        flash('A user with that email already exists!')
+        return redirect(url_for('main.invite'))
+
+    # Generate temporary password
+    def generate_random_password(length):
+        alphabet = string.ascii_uppercase + string.digits
+        return ''.join(random.choice(alphabet) for i in range(length))
+
+    temporary_password = generate_random_password(10)
+
+    # Add user,employee to database
+    new_user = User(email=email, name=name, password=generate_password_hash(temporary_password, method='sha256'),
+                    needs_reset=True, is_employee=True)
+    db.session.add(new_user)
+    db.session.commit()
+    user_entry = User.query.filter_by(email=email).first()
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle='Fake Title',
+                            payRate=9.00)
+    db.session.add(new_employee)
+    db.session.commit()
+
+    # Email user that their account has been created
+    msg = Message('Account Created', sender='dcaatimemamangement@gmail.com', recipients=[email])
+    msg.body = "An account has been created for you. Your temporary password is " + temporary_password + "."
+    mail.send(msg)
+
+    return redirect(url_for('main.profile'))
+
+@main.route('/employees')
+@login_required
+def employees():
+	if current_user.is_employee:
+		redirect(url_for('main.profile'))
+	employees = Employee.query.filter_by(company_id=current_user.id)
+	return render_template('employees.html', listOfEmployees=employees)
+
+
+# creates a new project
+@main.route('/createProject', methods=["GET", "POST"])
+@login_required
+def create_project():
+    if request.form:
+        exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
+        if not exists:
+            project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True, EmployerID=current_user.id)
+            db.session.add(project_name_var)
+            db.session.commit()
+    # error message
+    return render_template('/createProject.html', name=current_user.name)
+
+
+# creates
+@main.route('/viewProjects', methods=["GET", "POST"])
+@login_required
+def view_projects():
+    projects = Project.query.filter_by(EmployerID=current_user.id)
+    return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
