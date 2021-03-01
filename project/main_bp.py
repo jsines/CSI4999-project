@@ -56,7 +56,6 @@ def addexpense_post():
 	db.session.commit()
 	return redirect(url_for('main.profile'))
 
-
 @main.route('/profile')
 @login_required
 def profile():
@@ -107,6 +106,24 @@ def invite_post():
 
     return redirect(url_for('main.profile'))
 
+
+
+
+
+# Edit Employee Info
+@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@login_required
+def editEmployee(x=None):
+    payrate = request.form.get('payrate')
+    name = request.form.get('name')
+    title = request.form.get('title')
+    user = Employee.query.filter_by(emp_email= x).first()
+    user.payRate = payrate
+    user.name = name
+    user.jobTitle = title
+
+    db.session.commit()
+    return render_template('editEmployee.html', x = x)
 @main.route('/employees')
 @login_required
 def employees():
