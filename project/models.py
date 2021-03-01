@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
 
 #this creates Employee table
 class Employee(db.Model):
+	__tablename__ = 'employees'
 	employeeID = db.Column(db.Integer, primary_key=True, unique=True)
 	company_id = db.Column(db.Integer)
 	user_id = db.Column(db.Integer, unique=True)
@@ -22,6 +23,7 @@ class Employee(db.Model):
 	
 #this creates Project table
 class Project(db.Model):
+	__tablename__ = 'projects'
 	projectID = db.Column(db.Integer, primary_key=True, unique=True)
 	projectName = db.Column(db.String(100))
 	projectOngoing = db.Column(db.Boolean)
@@ -43,9 +45,10 @@ class Assignments(db.Model):
 
 	
 class ExpenseLog(db.Model):
+	__tablename__ = 'expenselog'
 	expenseLogID = db.Column(db.Integer, primary_key=True)
-	projectID = db.Column(db.Integer)
-	employeeID = db.Column(db.Integer)
+	projectID = db.Column(db.Integer, db.ForeignKey("projects.projectID"))
+	employeeID = db.Column(db.Integer, db.ForeignKey("employees.employeeID"))
 	expenseName = db.Column(db.String(1000))
 	expenseAmount = db.Column(db.Numeric(13,2))
 	expenseDescription = db.Column(db.String(10000))

@@ -165,3 +165,13 @@ def create_project():
 def view_projects():
     projects = Project.query.filter_by(EmployerID=current_user.id)
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
+
+# Audit project
+@main.route('/projects/<x>')   
+@login_required 
+def audit_project(x=None):
+    project = Project.query.filter_by(projectID=x).first()
+    projectName = project.projectName
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription)
+
+    return render_template('auditproject.html', query=q, projectName=projectName)
