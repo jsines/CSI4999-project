@@ -4,7 +4,7 @@ from sqlalchemy import text
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
-from .models import User, Employee, Project, TimeLog, Assignments
+from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments
 from . import db, mail
 
 main = Blueprint('main', __name__)
@@ -39,8 +39,37 @@ def ManageProjects():
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=request.form.get("projectslist"))
         db.session.add(employee_id_var)
         db.session.commit()
-
     return render_template('/ManageProjects.html', Tresult=Tresult)
+
+@main.route('/addexpense')
+@login_required
+def addexpense():
+	if not current_user.is_employee:
+		return redirect(url_for('main.profile'))
+	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+
+	projects = Project.query.filter_by(EmployerID=this_employee.company_id)
+	return render_template('addexpense.html', projectsList=projects)
+
+
+@main.route('/addexpense', methods=['POST'])
+@login_required
+def addexpense_post():
+	if not current_user.is_employee:
+		return redirect(url_for('main.profile'))
+	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+	this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+
+	e_projectid = this_project.projectID
+	e_employeeid = this_employee.employeeID
+	e_name=request.form.get("expenseName")
+	e_amount=request.form.get("expenseAmount")
+	e_description=request.form.get("expenseDescription")
+	
+	expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
+	db.session.add(expense_entry)
+	db.session.commit()
+	return redirect(url_for('main.profile'))
 
 @main.route('/profile')
 @login_required
@@ -136,3 +165,13 @@ def create_project():
 def view_projects():
     projects = Project.query.filter_by(EmployerID=current_user.id)
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
+
+# Audit project
+@main.route('/projects/<x>')   
+@login_required 
+def audit_project(x=None):
+    project = Project.query.filter_by(projectID=x).first()
+    projectName = project.projectName
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription)
+
+    return render_template('auditproject.html', query=q, projectName=projectName)

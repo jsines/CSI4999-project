@@ -68,6 +68,11 @@
                     <a class="nav-link" href="{{ url_for('main.add_time') }}">Add Time Log</a>
                 </li>
                 {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.addexpense') }}">Add Expense</a>
+                </li>
+                {% endif %}
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>

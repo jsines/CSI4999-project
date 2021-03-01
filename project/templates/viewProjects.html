@@ -6,7 +6,7 @@
     <thead>
       <tr class="w3-light-grey">
         <th>Project Name</th>
-        <th>Ongoing?</th>
+        <th>Hours (TODO)</th>
         <th>Options</th>
       </tr>
     </thead>
@@ -15,7 +15,7 @@
                 <td>{{project.projectName}}</td>
                 <td>{{project.projectOngoing}}</td>
                 <td>
-                    <a href=\"#\" class=\"w3-button w3-light-grey\">View</a>
+                    <a href="{{ url_for('main.audit_project', x = project.projectID) }}" class=\"w3-button w3-light-grey\">View</a>
                     <a href=\"#\" class=\"w3-button w3-light-grey\">Manage</a></td>
                 </td>
             </tr>
