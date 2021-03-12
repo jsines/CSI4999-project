@@ -28,6 +28,7 @@ def add_time():
         tl_var = TimeLog(projectName=request.form.get("projectslist"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
         db.session.add(tl_var)
         db.session.commit()
+        flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
 @main.route('/ManageProjects', methods=["GET", "POST"])
@@ -39,6 +40,7 @@ def ManageProjects():
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=request.form.get("projectslist"))
         db.session.add(employee_id_var)
         db.session.commit()
+        flash("New Employee Added to Project!")
     return render_template('/ManageProjects.html', Tresult=Tresult)
 
 @main.route('/addexpense')
@@ -65,7 +67,7 @@ def addexpense_post():
 	e_name=request.form.get("expenseName")
 	e_amount=request.form.get("expenseAmount")
 	e_description=request.form.get("expenseDescription")
-	
+	flash("Expense Successfully Added!")
 	expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
 	db.session.add(expense_entry)
 	db.session.commit()
@@ -95,6 +97,7 @@ def invite_post():
     if user:
         flash('A user with that email already exists!')
         return redirect(url_for('main.invite'))
+    flash("New Employee Successfully Invited!")
 
     # Generate temporary password
     def generate_random_password(length):
@@ -122,19 +125,23 @@ def invite_post():
     return redirect(url_for('main.profile'))
 
 # Edit Employee Info    
-@main.route('/editEmployee/<x>', methods=["GET", "POST"])   
-@login_required 
-def editEmployee(x=None):   
-    payrate = request.form.get('payrate')   
-    name = request.form.get('name') 
-    title = request.form.get('title')   
-    user = Employee.query.filter_by(emp_email= x).first()   
-    user.payRate = payrate  
-    user.name = name    
-    user.jobTitle = title   
+@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@login_required
+def editEmployee(x=None):
 
-    db.session.commit() 
+    payrate = request.form.get('payrate')
+    name = request.form.get('name')
+    title = request.form.get('title')
+    user = Employee.query.filter_by(emp_email= x).first()
+    user.payRate = payrate
+    user.name = name
+    user.jobTitle = title
+   
+
+    db.session.commit()
     return render_template('editEmployee.html', x = x)
+
+
     
 @main.route('/employees')
 @login_required
@@ -151,6 +158,7 @@ def employees():
 def create_project():
     if request.form:
         exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
+        flash("New Project Successfully Created!")
         if not exists:
             project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True, EmployerID=current_user.id)
             db.session.add(project_name_var)

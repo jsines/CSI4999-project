@@ -21,6 +21,13 @@
 				<h1>
 					Add Employee
 				</h1>
+				        {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 			</div>
 		</div>
 	</div>
@@ -31,9 +38,9 @@
 			<form method="POST" action="/ManageProjects">
 				<div class="form-group">
 					<label for="Employee name">
-						Add employee by ID
+						Add Employee By ID
 					</label>
-					<input type="text" class="form-control" name="add_employee_form">
+					<input type="text" class="form-control" name="add_employee_form" placeholder="Enter Employee ID">
 				</div>
 					<div class="col-md-6">
 					 	<select name="projectslist" id="projectslist">
@@ -43,7 +50,7 @@
 						</select>
 					</div>
 				<button type="submit" class="btn btn-primary">
-					add
+					Add
 				</button>
 			</form>
 		</div>
