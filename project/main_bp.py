@@ -136,7 +136,7 @@ def editEmployee(x=None):
     user.payRate = payrate
     user.name = name
     user.jobTitle = title
-    flash("New Employee Info Saved!")
+   
 
     db.session.commit()
     return render_template('editEmployee.html', x = x)
