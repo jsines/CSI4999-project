@@ -31,27 +31,54 @@ def add_time():
         flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
-@main.route('/ManageProjects', methods=["GET", "POST"])
+@main.route('/ManageProjects/<prjName>', methods=["GET", "POST"])
+@main.route('/ManageProjects/<prjName>/<whatToDo>/<assignmentID>', methods=["GET", "POST"])
+@main.route('/ManageProjects/<prjName>/<whatToDo>', methods=["GET", "POST"])
 @login_required
-def ManageProjects():
-    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
+    print(prjName)
+    print(assignmentID)
+    print(whatToDo)
+
+    if whatToDo =="removeEmployee":
+        assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
+        db.session.delete(assignmentIDToDelete)
+        db.session.commit()
+        print(assignmentIDToDelete)
+        return redirect(url_for('main.ManageProjects',prjName=prjName))
+
+    if whatToDo =="deactivateProject":
+        projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
+        projectToDeactivate.projectOngoing = 0
+        db.session.commit()
+        return redirect(url_for('main.view_projects'))
 
     if not request.form.get("add_employee_form") == None:
-        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=request.form.get("projectslist"))
+        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
         db.session.add(employee_id_var)
         db.session.commit()
-        flash("New Employee Added to Project!")
-    return render_template('/ManageProjects.html', Tresult=Tresult)
+        return redirect(url_for('main.ManageProjects', prjName=prjName))
+
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+    # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
+    # q = db.session.query(Employee,Assignments).select_from(Assignments).join(Employee).filter(Assignments.projectName == prjName).all()
+    t = text(
+        "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
+            prjName))
+    result = db.session.execute(t)
+    # print(result.first())
+    flash("New Employee Added to Project!")
+    return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result)
 
 @main.route('/addexpense')
 @login_required
 def addexpense():
-	if not current_user.is_employee:
-		return redirect(url_for('main.profile'))
-	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+    if not current_user.is_employee:
+        return redirect(url_for('main.profile'))
+    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
 
-	projects = Project.query.filter_by(EmployerID=this_employee.company_id)
-	return render_template('addexpense.html', projectsList=projects)
+    projects = Project.query.filter_by(EmployerID=this_employee.company_id)
+    return render_template('addexpense.html', projectsList=projects)
 
 
 @main.route('/addexpense', methods=['POST'])
@@ -77,7 +104,6 @@ def addexpense_post():
 @login_required
 def profile():
     return render_template('profile.html', name=current_user.name)
-
 
 @main.route('/invite')
 @login_required
@@ -146,10 +172,10 @@ def editEmployee(x=None):
 @main.route('/employees')
 @login_required
 def employees():
-	if current_user.is_employee:
-		redirect(url_for('main.profile'))
-	employees = Employee.query.filter_by(company_id=current_user.id)
-	return render_template('employees.html', listOfEmployees=employees)
+    if current_user.is_employee:
+        redirect(url_for('main.profile'))
+    employees = Employee.query.filter_by(company_id=current_user.id)
+    return render_template('employees.html', listOfEmployees=employees)
 
 
 # creates a new project
