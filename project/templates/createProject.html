@@ -6,20 +6,20 @@
         <div class="row">
             <div class="col1">
                 <h2>Create a new project</h2>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="notification">
-                        {{ messages[0] }}
-                    </div>
-                {% endif %}
-                {% endwith %}
+             {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
                 <form method="POST" action="/createProject">
-                    <div class="info">
-                        <label>Project Name</label>
-                        <input type="text" name="projectNameForm" class="info1" required>
+                    <div class="form-group">
+                        <label>Enter New Project Name:</label>
+                        <input type="text" name="projectNameForm" class="form-control" placeholder="New Project Name" required>
                     </div>
-                    <div class="info">
-                        <input type="submit" class="btn" value="ADD">
+                    <div class="form-group">
+                        <button type="submit" name="add" class="btn btn-primary" value="Add New Project">Add New Project</button>
                     </div>
                 </form>
             </div>
