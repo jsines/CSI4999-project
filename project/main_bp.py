@@ -97,6 +97,7 @@ def invite_post():
     if user:
         flash('A user with that email already exists!')
         return redirect(url_for('main.invite'))
+    flash("New Employee Successfully Invited!")
 
     # Generate temporary password
     def generate_random_password(length):
