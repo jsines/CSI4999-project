@@ -2,6 +2,13 @@
 {% block content %}
 <link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <form action="/addexpense" method="POST">
         <div class="form-group">
             <label for="expenseName">Name: </label>

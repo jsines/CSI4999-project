@@ -23,6 +23,13 @@
 				<h1>
 					Add Time log
 				</h1>
+                {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 			</div>
 		</div>
 	</div>

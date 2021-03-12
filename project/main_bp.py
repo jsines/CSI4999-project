@@ -28,6 +28,7 @@ def add_time():
         tl_var = TimeLog(projectName=request.form.get("projectslist"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
         db.session.add(tl_var)
         db.session.commit()
+        flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
 @main.route('/ManageProjects/<prjName>', methods=["GET", "POST"])
@@ -66,7 +67,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
             prjName))
     result = db.session.execute(t)
     # print(result.first())
-
+    flash("New Employee Added to Project!")
     return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result)
 
 @main.route('/addexpense')
@@ -83,21 +84,21 @@ def addexpense():
 @main.route('/addexpense', methods=['POST'])
 @login_required
 def addexpense_post():
-    if not current_user.is_employee:
-        return redirect(url_for('main.profile'))
-    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-    this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+	if not current_user.is_employee:
+		return redirect(url_for('main.profile'))
+	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+	this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
 
-    e_projectid = this_project.projectID
-    e_employeeid = this_employee.employeeID
-    e_name=request.form.get("expenseName")
-    e_amount=request.form.get("expenseAmount")
-    e_description=request.form.get("expenseDescription")
-
-    expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
-    db.session.add(expense_entry)
-    db.session.commit()
-    return redirect(url_for('main.profile'))
+	e_projectid = this_project.projectID
+	e_employeeid = this_employee.employeeID
+	e_name=request.form.get("expenseName")
+	e_amount=request.form.get("expenseAmount")
+	e_description=request.form.get("expenseDescription")
+	flash("Expense Successfully Added!")
+	expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
+	db.session.add(expense_entry)
+	db.session.commit()
+	return redirect(url_for('main.profile'))
 
 @main.route('/profile')
 @login_required
@@ -122,6 +123,7 @@ def invite_post():
     if user:
         flash('A user with that email already exists!')
         return redirect(url_for('main.invite'))
+    flash("New Employee Successfully Invited!")
 
     # Generate temporary password
     def generate_random_password(length):
@@ -149,19 +151,23 @@ def invite_post():
     return redirect(url_for('main.profile'))
 
 # Edit Employee Info    
-@main.route('/editEmployee/<x>', methods=["GET", "POST"])   
-@login_required 
-def editEmployee(x=None):   
-    payrate = request.form.get('payrate')   
-    name = request.form.get('name') 
-    title = request.form.get('title')   
-    user = Employee.query.filter_by(emp_email= x).first()   
-    user.payRate = payrate  
-    user.name = name    
-    user.jobTitle = title   
+@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@login_required
+def editEmployee(x=None):
 
-    db.session.commit() 
+    payrate = request.form.get('payrate')
+    name = request.form.get('name')
+    title = request.form.get('title')
+    user = Employee.query.filter_by(emp_email= x).first()
+    user.payRate = payrate
+    user.name = name
+    user.jobTitle = title
+   
+
+    db.session.commit()
     return render_template('editEmployee.html', x = x)
+
+
     
 @main.route('/employees')
 @login_required
@@ -178,6 +184,7 @@ def employees():
 def create_project():
     if request.form:
         exists = Project.query.filter_by(projectName=request.form.get("projectNameForm")).first()
+        flash("New Project Successfully Created!")
         if not exists:
             project_name_var = Project(projectName=request.form.get("projectNameForm"), projectOngoing=True, EmployerID=current_user.id)
             db.session.add(project_name_var)
