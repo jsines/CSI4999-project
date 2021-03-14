@@ -25,7 +25,7 @@ def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
     if not request.form.get("timeworked") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
         db.session.add(tl_var)
         db.session.commit()
         flash("New Time Log Successfully Added!")
@@ -36,28 +36,27 @@ def add_time():
 @main.route('/ManageProjects/<prjName>/<whatToDo>', methods=["GET", "POST"])
 @login_required
 def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
-    print(prjName)
-    print(assignmentID)
-    print(whatToDo)
-
+    existing = Employee.query.all()
     if whatToDo =="removeEmployee":
+        #existing = Employee.query.all()
         assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
         db.session.delete(assignmentIDToDelete)
         db.session.commit()
-        print(assignmentIDToDelete)
-        return redirect(url_for('main.ManageProjects',prjName=prjName))
+        return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     if whatToDo =="deactivateProject":
+       # existing = Employee.query.all()
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
         db.session.commit()
-        return redirect(url_for('main.view_projects'))
+        return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
     if not request.form.get("add_employee_form") == None:
+       # existing = Employee.query.all()
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
         db.session.add(employee_id_var)
         db.session.commit()
-        return redirect(url_for('main.ManageProjects', prjName=prjName))
+        return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     Tresult = Project.query.filter_by(EmployerID=current_user.id)
     # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
@@ -68,7 +67,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
     result = db.session.execute(t)
     # print(result.first())
     flash("New Employee Added to Project!")
-    return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result)
+    return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing)
 
 @main.route('/addexpense')
 @login_required
@@ -103,6 +102,10 @@ def addexpense_post():
 @main.route('/profile')
 @login_required
 def profile():
+    if current_user.is_employee:
+        emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+        row = Employee.query.filter_by(employeeID=emp_id.employeeID)
+        return render_template('profile.html', name=current_user.name, row=row)
     return render_template('profile.html', name=current_user.name)
 
 @main.route('/invite')
@@ -207,5 +210,8 @@ def audit_project(x=None):
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
     q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription)
-
-    return render_template('auditproject.html', query=q, projectName=projectName)
+    t = text(
+        "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
+            projectName))
+    result = db.session.execute(t)
+    return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
