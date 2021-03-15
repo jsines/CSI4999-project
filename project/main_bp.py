@@ -165,10 +165,15 @@ def invite_post():
 
     return redirect(url_for('main.invite'))
 
-# Edit Employee Info    
-@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@main.route('/editEmployee/<x>')
 @login_required
 def editEmployee(x=None):
+    return render_template('editEmployee.html', x = x)
+
+# Edit Employee Info
+@main.route('/editEmployee/<x>', methods=["POST"])
+@login_required
+def editEmployeepost(x=None):
 
     payrate = request.form.get('payrate')
     name = request.form.get('name')
@@ -180,6 +185,7 @@ def editEmployee(x=None):
    
 
     db.session.commit()
+    flash("New Employee Info Saved!")
     return render_template('editEmployee.html', x = x)
 
 
