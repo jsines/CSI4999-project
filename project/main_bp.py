@@ -99,7 +99,7 @@ def addexpense_post():
     e_expenseImg = ''
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        file.save(os.path.join('project/', UPLOAD_FOLDER, filename))
         e_expenseImg = filename
 
     e_projectid = this_project.projectID
@@ -135,7 +135,8 @@ def invite_post():
     # Find data from form
     email = request.form.get('email')
     name = request.form.get('name')
-
+    title = request.form.get('title')
+    payrate = request.form.get('payrate')
     # Check if user exists already
     user = User.query.filter_by(email=email).first()
     if user:
@@ -156,8 +157,8 @@ def invite_post():
     db.session.add(new_user)
     db.session.commit()
     user_entry = User.query.filter_by(email=email).first()
-    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle='Fake Title',
-                            payRate=9.00)
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle=title,
+                            payRate=payrate)
     db.session.add(new_employee)
     db.session.commit()
 
@@ -230,7 +231,7 @@ def view_projects():
 def audit_project(x=None):
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
-    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription)
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg)
     t = text(
         "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
             projectName))
