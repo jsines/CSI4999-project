@@ -32,6 +32,7 @@ class Project(db.Model):
 #this creates TimeLog table 
 class TimeLog(db.Model):
 	TimeLogID = db.Column(db.Integer, primary_key=True)
+	employeeID = db.Column(db.Integer)
 	projectName = db.Column(db.String(100))
 	currentTime = db.Column(db.Date)
 	time = db.Column(db.Integer)
