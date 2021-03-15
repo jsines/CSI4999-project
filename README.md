@@ -1,7 +1,7 @@
 # CSI4999-project
 DCAA-compliant time management system
 
-* To initialize environment variables, Run thEse in command line and then run "python -m flask run" and it should work: 
+* To initialize environment variables, Run these in command line and then run "python -m flask run" and it should work: 
   * set FLASK_APP=project 
   * set FLASK_DEBUG=1 
   * set MAILPWD=csi4999pass
