@@ -99,7 +99,30 @@
 						{% endfor %}
 				  </table>
 			</div>
-
+<div class="col">
+<h1>
+Existing employees
+</h1>
+ <table class="table table-striped">
+                    <thead>
+                      <tr class="">
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Employee Email</th>
+                          <th>Job Title</th>
+                      </tr>
+                    </thead>
+                        {% for existing in existing %}
+                            <tr>
+                                <td>{{existing.employeeID}}</td>
+                                <td>{{existing.name}}</td>
+                                <td>{{existing.emp_email}}</td>
+                                <td>{{existing.jobTitle}}</td>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                  </table>
+</div>
 			<div>
 				<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='deactivateProject') }}" class="btn-default sbt-sm">Deactivate Project</a></td>
 			</div>
