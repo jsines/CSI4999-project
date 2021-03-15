@@ -1,14 +1,20 @@
-import string, random, datetime 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+import string, random, datetime, os
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from sqlalchemy import text
 from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments
-from . import db, mail
+from . import db, mail, UPLOAD_FOLDER
 
 main = Blueprint('main', __name__)
 
+# for file uploading
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @main.route('/')
 def index():
@@ -83,21 +89,30 @@ def addexpense():
 @main.route('/addexpense', methods=['POST'])
 @login_required
 def addexpense_post():
-	if not current_user.is_employee:
-		return redirect(url_for('main.profile'))
-	this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-	this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+    if not current_user.is_employee: # should never happen
+        return redirect(url_for('main.profile'))
 
-	e_projectid = this_project.projectID
-	e_employeeid = this_employee.employeeID
-	e_name=request.form.get("expenseName")
-	e_amount=request.form.get("expenseAmount")
-	e_description=request.form.get("expenseDescription")
-	flash("Expense Successfully Added!")
-	expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description)
-	db.session.add(expense_entry)
-	db.session.commit()
-	return redirect(url_for('main.profile'))
+    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+    this_project = Project.query.filter_by(EmployerID=this_employee.company_id, projectName=request.form.get('projectName')).first()
+    
+    file = request.files['file']
+    e_expenseImg = ''
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('project/', UPLOAD_FOLDER, filename))
+        e_expenseImg = filename
+
+    e_projectid = this_project.projectID
+    e_employeeid = this_employee.employeeID
+    e_name=request.form.get("expenseName")
+    e_amount=request.form.get("expenseAmount")
+    e_description=request.form.get("expenseDescription")
+    e_expenseType=request.form.get("expenseType")
+    expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description, expenseType=e_expenseType, expenseImg=e_expenseImg)
+    db.session.add(expense_entry)
+    db.session.commit()
+    flash("Expense Successfully Added!")
+    return redirect(url_for('main.addexpense'))
 
 @main.route('/profile')
 @login_required
@@ -120,7 +135,8 @@ def invite_post():
     # Find data from form
     email = request.form.get('email')
     name = request.form.get('name')
-
+    title = request.form.get('title')
+    payrate = request.form.get('payrate')
     # Check if user exists already
     user = User.query.filter_by(email=email).first()
     if user:
@@ -141,8 +157,8 @@ def invite_post():
     db.session.add(new_user)
     db.session.commit()
     user_entry = User.query.filter_by(email=email).first()
-    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle='Fake Title',
-                            payRate=9.00)
+    new_employee = Employee(user_id=user_entry.id, company_id=current_user.id, name=name, emp_email=user_entry.email, jobTitle=title,
+                            payRate=payrate)
     db.session.add(new_employee)
     db.session.commit()
 
@@ -151,12 +167,17 @@ def invite_post():
     msg.body = "An account has been created for you. Your temporary password is " + temporary_password + "."
     mail.send(msg)
 
-    return redirect(url_for('main.profile'))
+    return redirect(url_for('main.invite'))
 
-# Edit Employee Info    
-@main.route('/editEmployee/<x>', methods=["GET", "POST"])
+@main.route('/editEmployee/<x>')
 @login_required
 def editEmployee(x=None):
+    return render_template('editEmployee.html', x = x)
+
+# Edit Employee Info
+@main.route('/editEmployee/<x>', methods=["POST"])
+@login_required
+def editEmployeepost(x=None):
 
     payrate = request.form.get('payrate')
     name = request.form.get('name')
@@ -168,6 +189,7 @@ def editEmployee(x=None):
    
 
     db.session.commit()
+    flash("New Employee Info Saved!")
     return render_template('editEmployee.html', x = x)
 
 
@@ -209,9 +231,15 @@ def view_projects():
 def audit_project(x=None):
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
-    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription)
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg)
     t = text(
         "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
             projectName))
     result = db.session.execute(t)
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
+
+# Display receipts
+@main.route('/receipts/<filename>')
+@login_required
+def display_receipt(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)

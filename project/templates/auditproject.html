@@ -10,6 +10,8 @@
                 <th>Name</th>
                 <th>Amount</th>
                 <th>Description</th>
+                <th>Type</th>
+                <th>Receipt</th>
             </tr>
         </thead> {% for row in query %}
         <tr>
@@ -17,6 +19,8 @@
             <td>{{row.expenseName}}</td>
             <td>{{row.expenseAmount}}</td>
             <td>{{row.expenseDescription}}</td>
+            <td>{{row.expenseType}}</td>
+            <td><a href="{{ url_for('main.display_receipt', filename=row.expenseImg) }}" class="btn-default sbt-sm">View</a></td>
         </tr> {% endfor %} </table>
 
     <h2>{{ projectName }} Time Logs</h2>

@@ -53,3 +53,5 @@ class ExpenseLog(db.Model):
 	expenseName = db.Column(db.String(1000))
 	expenseAmount = db.Column(db.Numeric(13,2))
 	expenseDescription = db.Column(db.String(10000))
+	expenseType = db.Column(db.String(20))
+	expenseImg = db.Column(db.String(100))

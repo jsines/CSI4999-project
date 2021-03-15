@@ -13,8 +13,10 @@ from flask_mail import Mail, Message
 
 db = SQLAlchemy()
 mail = Mail()
+UPLOAD_FOLDER = 'receipts/'
 def create_app():
 	app = Flask(__name__)
+	app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 	app.config['SECRET_KEY'] = os.urandom(24)
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 	db.init_app(app)
