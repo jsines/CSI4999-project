@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href='/static/stylesheet.css' />
+<div class="container">
+    <h1>{{ projectName }} Expenses</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>Email</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Receipt</th>
+            </tr>
+        </thead> {% for row in query %}
+        <tr>
+            <td>{{row.emp_email}}</td>
+            <td>{{row.expenseName}}</td>
+            <td>{{row.expenseAmount}}</td>
+            <td>{{row.expenseDescription}}</td>
+            <td>{{row.expenseType}}</td>
+            <td><a href="{{ url_for('main.display_receipt', filename=row.expenseImg) }}" class="btn-default sbt-sm">View</a></td>
+        </tr> {% endfor %} </table>
+
+    <h2>{{ projectName }} Time Logs</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Date Log Submitted</th>
+                <th>Time Worked (hours)</th>
+            </tr>
+        </thead> {% for row in query2 %}
+        <tr>
+            <td>{{row.employeeID}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.currentTime}}</td>
+            <td>{{row.time}}</td>
+        </tr> {% endfor %} </table>
+
+</div> {% endblock %}
