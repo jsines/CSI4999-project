@@ -1,0 +1,41 @@
+<div>
+    <label>Number of Employees </label>
+    <input type="number" id="employees" name="employees" value="">
+    <a href="#" id="numberOfEmployees" onclick="addEmployees()">Set employees</a>
+        <div id="container"/>
+</div>
+<script>
+function addEmployees(){
+    var numberOfEmployees = document.getElementById("employees").value;
+    var container = document.getElementById("container");
+    while (container.hasChildNodes()) {
+        container.removeChild(container.lastChild);
+    }
+    for (i=0;i<numberOfEmployees;i++){
+        container.appendChild(document.createTextNode("employee " + (i+1) + ": "));
+        container.appendChild(document.createElement("br"));
+
+        container.appendChild(document.createTextNode("First Name "));
+        var firstName = document.createElement("input");
+        firstName.type = "text";
+        container.appendChild(firstName);
+
+        container.appendChild(document.createTextNode("\tLast Name "));
+        var lastName = document.createElement("input");
+        lastName.type = "text";
+        container.appendChild(lastName);
+
+        container.appendChild(document.createTextNode("\tTitle "));
+        var title = document.createElement("input");
+        title.type = "text";
+        container.appendChild(title);
+
+        container.appendChild(document.createTextNode("\tPay Rate "));
+        var payRate = document.createElement("input");
+        payRate.type = "number";
+        container.appendChild(payRate);
+
+        container.appendChild(document.createElement("br"));
+        container.appendChild(document.createElement("br"));
+    }
+}

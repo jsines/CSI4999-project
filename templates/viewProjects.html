@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content">
+    <table class="table table-striped">
+    <thead>
+      <tr class="">
+        <th>Project Name</th>
+        <th>Hours (TODO)</th>
+          <th>Ongoing?</th>>
+        <th>Options</th>
+      </tr>
+    </thead>
+        {% for project in listOfProjects %}
+            <tr>
+                <td>{{project.projectName}}</td>
+                <td>TODO</td>
+                <td>{{project.projectOngoing}}</td>
+                <td>
+                    <a href="{{ url_for('main.audit_project', x = project.projectID) }}" class="btn-default sbt-sm">View</a>
+                    <a href="{{ url_for('main.ManageProjects', prjName = project.projectName) }}" class="btn-default sbt-sm">Manage</a></td>
+                </td>
+            </tr>
+        {% endfor %}
+  </table>
+</div>
+{% endblock %}
+
+
+

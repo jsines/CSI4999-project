@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+    <table class="table table-striped"> <a href="{{ url_for('main.invite') }}">Invite New Employee</a>
+        <thead>
+            <tr class="w3-light-grey">
+                <th>Name</th>
+                <th>Email</th>
+                <th>Options</th>
+            </tr>
+        </thead> {% for employee in listOfEmployees %}
+        <tr>
+            <td>{{employee.name}}</td>
+            <td>{{employee.emp_email}}</td>
+            <td> <a href="#">View</a> <a href="{{ url_for('main.editEmployee', x = employee.emp_email) }}">Manage</a> </td>
+        </tr> {% endfor %} </table>
+ {% endblock %}
