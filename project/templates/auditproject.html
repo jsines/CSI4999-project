@@ -28,17 +28,19 @@
     <table class="table table-striped">
         <thead>
             <tr class="w3-light-grey">
-                <th>Employee ID</th>
                 <th>Employee Name</th>
-                <th>Date Log Submitted</th>
-                <th>Time Worked (hours)</th>
+                <th>Start Date</th>
+                <th>Start Time</th>
+                <th>End Date</th>
+                <th>End Time</th>
             </tr>
         </thead> {% for row in query2 %}
         <tr>
-            <td>{{row.employeeID}}</td>
             <td>{{row.name}}</td>
-            <td>{{row.currentTime}}</td>
-            <td>{{row.time}}</td>
+            <td>{{row.startDate}}</td>
+            <td>{{row.startTime}}</td>
+            <td>{{row.endDate}}</td>
+            <td>{{row.endTime}}</td>
         </tr> {% endfor %} </table>
 
 </div> {% endblock %}

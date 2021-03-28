@@ -18,7 +18,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			 
-			<h1>Time log</h1>
+			<h1>Time logs</h1>
 		</div>
 	</div>
     <div class="container-fluid">
@@ -33,16 +33,22 @@
 				<thead>
 					<tr>
 						<th>
-							TimeLogID
-						</th>
-						<th>
 							Project Name
 						</th>
 						<th>
-							Current Date
+							Employee Name
 						</th>
 						<th>
-							Time Worked (hours)
+							Start Date
+						</th>
+						<th>
+							Start Time
+						</th>
+						<th>
+							End Date
+						</th>
+						<th>
+							End Time
 						</th>
 					</tr>
 				</thead>
@@ -50,10 +56,12 @@
 					<tr>
 						{% for row in row %}
     				<tr>
-        				<td>{{ row.TimeLogID }}</td>
         				<td>{{ row.projectName}}</td>
-						<td>{{ row.currentTime}}</td>
-						<td>{{ row.time}}</td>
+						<td>{{ row.employeeName}}</td>
+        				<td>{{ row.startDate}}</td>
+						<td>{{ row.startTime}}</td>
+						<td>{{ row.endDate}}</td>
+						<td>{{ row.endTime}}</td>
     				</tr>
     					{% endfor %}
 					</tr>
