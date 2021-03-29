@@ -2,6 +2,13 @@
 <link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
     <h1>{{ projectName }} Expenses</h1>
+    <div>					   {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}</div>
 
     <table class="table table-striped">
         <thead>
@@ -12,6 +19,7 @@
                 <th>Description</th>
                 <th>Type</th>
                 <th>Receipt</th>
+                <th>Options</th>
             </tr>
         </thead> {% for row in query %}
         <tr>
@@ -21,6 +29,7 @@
             <td>{{row.expenseDescription}}</td>
             <td>{{row.expenseType}}</td>
             <td><a href="{{ url_for('main.display_receipt', filename=row.expenseImg) }}" class="btn-default sbt-sm">View</a></td>
+            <td><a href="{{ url_for('main.audit_project', expenseid=row.expenseLogID, x=row.projectID) }}" class="btn-default sbt-sm">Delete</a></td>
         </tr> {% endfor %} </table>
 
     <h2>{{ projectName }} Time Logs</h2>
@@ -28,17 +37,19 @@
     <table class="table table-striped">
         <thead>
             <tr class="w3-light-grey">
-                <th>Employee ID</th>
                 <th>Employee Name</th>
-                <th>Date Log Submitted</th>
-                <th>Time Worked (hours)</th>
+                <th>Start Date</th>
+                <th>Start Time</th>
+                <th>End Date</th>
+                <th>End Time</th>
             </tr>
         </thead> {% for row in query2 %}
         <tr>
-            <td>{{row.employeeID}}</td>
             <td>{{row.name}}</td>
-            <td>{{row.currentTime}}</td>
-            <td>{{row.time}}</td>
+            <td>{{row.startDate}}</td>
+            <td>{{row.startTime}}</td>
+            <td>{{row.endDate}}</td>
+            <td>{{row.endTime}}</td>
         </tr> {% endfor %} </table>
 
 </div> {% endblock %}

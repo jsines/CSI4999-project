@@ -22,16 +22,29 @@ def index():
 
 @main.route('/timelogpage')
 def timelog():
-    row = TimeLog.query.all()
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = TimeLog.query.filter_by(employeeID=emp_id.employeeID)
     return render_template('timelogpage.html', title='Overview', row=row)
+
+@main.route('/timelogpage/<timelogid>', methods=["GET", "POST"])
+@login_required
+def deleteTimelog(timelogid=None):
+    timelogdelete = TimeLog.query.filter_by(TimeLogID=timelogid).first()
+    db.session.delete(timelogdelete)
+    db.session.commit()
+    flash("Time Log Successfully Deleted")
+    return timelog()
+
+
+
 
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
 def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
-    if not request.form.get("timeworked") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    if not request.form.get("starttime") == None:
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"), endDate=request.form.get("enddate"), startTime=request.form.get("starttime"), endTime=request.form.get("endtime"))
         db.session.add(tl_var)
         db.session.commit()
         flash("New Time Log Successfully Added!")
@@ -70,6 +83,22 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
+    if not request.form.get("add_employee_form") == None:
+        existing = Employee.query.all()
+        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
+        db.session.add(employee_id_var)
+        db.session.commit()
+        return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
+
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+    # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
+    # q = db.session.query(Employee,Assignments).select_from(Assignments).join(Employee).filter(Assignments.projectName == prjName).all()
+    t = text(
+        "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
+            prjName))
+    result = db.session.execute(t)
+    # print(result.first())
+    flash("New Employee Added to Project!")
     return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing)
 
 @main.route('/addexpense')
@@ -77,10 +106,9 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
 def addexpense():
     if not current_user.is_employee:
         return redirect(url_for('main.profile'))
-    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-
-    projects = Project.query.filter_by(EmployerID=this_employee.company_id)
-    return render_template('addexpense.html', projectsList=projects)
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first() #***#
+    row = Assignments.query.filter_by(employeeID=emp_id.employeeID) #***#
+    return render_template('addexpense.html', row=row)
 
 
 @main.route('/addexpense', methods=['POST'])
@@ -223,16 +251,28 @@ def view_projects():
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
 
 # Audit project
+@main.route('/projects/<x>/<expenseid>')
 @main.route('/projects/<x>')   
 @login_required 
-def audit_project(x=None):
+def audit_project(x=None, expenseid=None):
+
+
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
-    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg)
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg, ExpenseLog.projectID, ExpenseLog.expenseLogID)
     t = text(
         "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
             projectName))
     result = db.session.execute(t)
+
+    # Remove Expense
+    if not expenseid == None:
+        delexpense = ExpenseLog.query.filter_by(expenseLogID=expenseid).first()
+        db.session.delete(delexpense)
+        db.session.commit()
+        flash("Expense Successfully Deleted.")
+        return redirect(url_for('main.audit_project', x=x))
+
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
 
 # Display receipts
