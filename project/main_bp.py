@@ -120,7 +120,7 @@ def profile():
     if current_user.is_employee:
         emp_id = Employee.query.filter_by(user_id=current_user.id).first()
         row = Employee.query.filter_by(employeeID=emp_id.employeeID)
-        return render_template('profile.html', name=current_user.name, row=row)
+        return render_template('profile.html', name=emp_id.name, row=row)
     return render_template('profile.html', name=current_user.name)
 
 @main.route('/invite')
