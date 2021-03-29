@@ -22,7 +22,8 @@ def index():
 
 @main.route('/timelogpage')
 def timelog():
-    row = TimeLog.query.all()
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = TimeLog.query.filter_by(employeeID=emp_id.employeeID)
     return render_template('timelogpage.html', title='Overview', row=row)
 
 @main.route('/timelogpage/<timelogid>', methods=["GET", "POST"])
@@ -42,8 +43,8 @@ def deleteTimelog(timelogid=None):
 def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
-    if not request.form.get("timeworked") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    if not request.form.get("starttime") == None:
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"), endDate=request.form.get("enddate"), startTime=request.form.get("starttime"), endTime=request.form.get("endtime"))
         db.session.add(tl_var)
         db.session.commit()
         flash("New Time Log Successfully Added!")
@@ -56,21 +57,21 @@ def add_time():
 def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
     existing = Employee.query.all()
     if whatToDo =="removeEmployee":
-        #existing = Employee.query.all()
+        existing = Employee.query.all()
         assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
         db.session.delete(assignmentIDToDelete)
         db.session.commit()
         return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     if whatToDo =="deactivateProject":
-       # existing = Employee.query.all()
+        existing = Employee.query.all()
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
     if not request.form.get("add_employee_form") == None:
-       # existing = Employee.query.all()
+        existing = Employee.query.all()
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
         db.session.add(employee_id_var)
         db.session.commit()
@@ -92,10 +93,9 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
 def addexpense():
     if not current_user.is_employee:
         return redirect(url_for('main.profile'))
-    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-
-    projects = Project.query.filter_by(EmployerID=this_employee.company_id)
-    return render_template('addexpense.html', projectsList=projects)
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first() #***#
+    row = Assignments.query.filter_by(employeeID=emp_id.employeeID) #***#
+    return render_template('addexpense.html', row=row)
 
 
 @main.route('/addexpense', methods=['POST'])

@@ -17,15 +17,14 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
-			 
 			<h1>Time log</h1>
-					   {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for msg in messages %}
-    <p>{{ msg }}</p>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+			{% with messages = get_flashed_messages() %}
+    		{% if messages %}
+    		{% for msg in messages %}
+    		<p>{{ msg }}</p>
+    		{% endfor %}
+    		{% endif %}
+    		{% endwith %}
 		</div>
 	</div>
     <div class="container-fluid">
@@ -40,16 +39,22 @@
 				<thead>
 					<tr>
 						<th>
-							TimeLogID
-						</th>
-						<th>
 							Project Name
 						</th>
 						<th>
-							Current Date
+							Employee Name
 						</th>
 						<th>
-							Time Worked (hours)
+							Start Date
+						</th>
+						<th>
+							Start Time
+						</th>
+						<th>
+							End Date
+						</th>
+						<th>
+							End Time
 						</th>
 						<th>
 							Options
@@ -60,10 +65,12 @@
 					<tr>
 						{% for row in row %}
     				<tr>
-        				<td>{{ row.TimeLogID }}</td>
         				<td>{{ row.projectName}}</td>
-						<td>{{ row.currentTime}}</td>
-						<td>{{ row.time}}</td>
+						<td>{{ row.employeeName}}</td>
+        				<td>{{ row.startDate}}</td>
+						<td>{{ row.startTime}}</td>
+						<td>{{ row.endDate}}</td>
+						<td>{{ row.endTime}}</td>
 						<td><a href="{{ url_for('main.deleteTimelog', timelogid=row.TimeLogID)}}" class="btn-default sbt-sm">Delete</a></td>
     				</tr>
     					{% endfor %}
