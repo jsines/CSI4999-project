@@ -49,8 +49,6 @@ def add_time():
         flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
-
-
 @main.route('/ManageProjects/<prjName>', methods=["GET", "POST"])
 @main.route('/ManageProjects/<prjName>/<whatToDo>/<assignmentID>', methods=["GET", "POST"])
 @main.route('/ManageProjects/<prjName>/<whatToDo>', methods=["GET", "POST"])

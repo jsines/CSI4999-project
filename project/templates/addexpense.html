@@ -9,7 +9,7 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-    <form action="/addexpense" method="POST">
+    <form action="/addexpense" method="POST" enctype=multipart/form-data>
         <div class="form-group">
             <label for="expenseName">Name: </label>
             <input type="text" name="expenseName" class="form-control" placeholder="Expense Name" required> </div>
@@ -26,6 +26,21 @@
     				<option value="{{project.projectName}}">{{project.projectName}}</option>
     			{% endfor %}
     		</select>
+    	</div>
+    	<div class="form-group">
+    		<label for="expenseType">Expense Type:</label>
+    		<select id="expenseType" name="expenseType">
+    			<option value="Transport">Transport</option>
+    			<option value="Dining">Dining</option>
+    			<option value="Lodging">Lodging</option>
+    			<option value="Business">Business</option>
+    			<option value="Other">Other</option>
+    		</select>
+    	</div>
+    	<div class="form-group">
+    		<label for="expenseImg">Receipt:</label>
+    		<input type=file name=file>
+    	</div>
         <div class="form-group">
             <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit</button>
         </div>

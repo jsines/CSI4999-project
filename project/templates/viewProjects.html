@@ -7,7 +7,8 @@
       <tr class="">
         <th>Project Name</th>
         <th>Hours (TODO)</th>
-          <th>Ongoing?</th>>
+        <th>Ongoing?</th>>
+        <th>Options</th>
       </tr>
     </thead>
         {% for project in listOfProjects %}
@@ -18,7 +19,6 @@
                 <td>
                     <a href="{{ url_for('main.audit_project', x = project.projectID) }}" class="btn-default sbt-sm">View</a>
                     <a href="{{ url_for('main.ManageProjects', prjName = project.projectName) }}" class="btn-default sbt-sm">Manage</a>
-                </td>
                 </td>
             </tr>
         {% endfor %}

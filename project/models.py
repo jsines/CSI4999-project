@@ -32,6 +32,7 @@ class Project(db.Model):
 #this creates TimeLog table 
 class TimeLog(db.Model):
 	TimeLogID = db.Column(db.Integer, primary_key=True)
+	employeeID = db.Column(db.Integer)
 	projectName = db.Column(db.String(100))
 	currentTime = db.Column(db.Date)
 	time = db.Column(db.Integer)
@@ -52,3 +53,5 @@ class ExpenseLog(db.Model):
 	expenseName = db.Column(db.String(1000))
 	expenseAmount = db.Column(db.Numeric(13,2))
 	expenseDescription = db.Column(db.String(10000))
+	expenseType = db.Column(db.String(20))
+	expenseImg = db.Column(db.String(100))
