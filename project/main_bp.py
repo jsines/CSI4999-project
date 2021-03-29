@@ -37,42 +37,39 @@ def add_time():
         flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
-@main.route('/ManageProjects/<prjName>', methods=["GET", "POST"])
-@main.route('/ManageProjects/<prjName>/<whatToDo>/<assignmentID>', methods=["GET", "POST"])
-@main.route('/ManageProjects/<prjName>/<whatToDo>', methods=["GET", "POST"])
+@main.route('/ManageProjects/<string:prjName>')
+@main.route('/ManageProjects/<string:prjName>/<whatToDo>/<int:employeeID>')
+@main.route('/ManageProjects/<string:prjName>/<whatToDo>')
 @login_required
-def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
-    existing = Employee.query.all()
+def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
+    filterEmployeesAvailable = text(
+        "SELECT employees.name, employees.employeeID, employees.user_id, employees.emp_email, employees.jobTitle, employees.payRate FROM employees LEFT JOIN assignments ON employees.employeeID=assignments.employeeID WHERE employees.employeeID NOT IN (SELECT assignments.employeeID FROM assignments WHERE assignments.projectName == '{}') OR assignments.projectName IS NULL;".format(prjName))
+    existing = db.session.execute(filterEmployeesAvailable)
+
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+    t = text(
+        "SELECT Assignments.assignmentID, employees.employeeID, employees.name, employees.emp_email, employees.jobTitle FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName == '{}';".format(prjName))
+    result = db.session.execute(t)
+
     if whatToDo =="removeEmployee":
-        #existing = Employee.query.all()
-        assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
+        assignmentIDToDelete = Assignments.query.filter_by(projectName=prjName, employeeID=employeeID).first()
         db.session.delete(assignmentIDToDelete)
         db.session.commit()
+        return redirect(url_for('main.ManageProjects', prjName=prjName, existing=existing))
+
+    if whatToDo =="AddEmployee":
+        employee_id_var = Assignments(employeeID=employeeID, UserID=current_user.id, projectName=prjName)
+        db.session.add(employee_id_var)
+        db.session.commit()
+        flash("New Employee Added to Project!")
         return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     if whatToDo =="deactivateProject":
-       # existing = Employee.query.all()
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
-    if not request.form.get("add_employee_form") == None:
-       # existing = Employee.query.all()
-        employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
-        db.session.add(employee_id_var)
-        db.session.commit()
-        return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
-
-    Tresult = Project.query.filter_by(EmployerID=current_user.id)
-    # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
-    # q = db.session.query(Employee,Assignments).select_from(Assignments).join(Employee).filter(Assignments.projectName == prjName).all()
-    t = text(
-        "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
-            prjName))
-    result = db.session.execute(t)
-    # print(result.first())
-    flash("New Employee Added to Project!")
     return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing)
 
 @main.route('/addexpense')
