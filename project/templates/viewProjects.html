@@ -2,12 +2,13 @@
 {% block content %}
 <link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
+    <a class="nav-link" href="{{ url_for('main.create_project') }}">Create Project</a>
     <table class="table table-striped">
     <thead>
       <tr class="">
         <th>Project Name</th>
         <th>Hours (TODO)</th>
-        <th>Ongoing?</th>>
+        <th>Ongoing?</th>
         <th>Options</th>
       </tr>
     </thead>

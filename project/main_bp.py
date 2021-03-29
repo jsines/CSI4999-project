@@ -98,7 +98,6 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
             prjName))
     result = db.session.execute(t)
     # print(result.first())
-    flash("New Employee Added to Project!")
     return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing)
 
 @main.route('/addexpense')
@@ -108,7 +107,7 @@ def addexpense():
         return redirect(url_for('main.profile'))
     emp_id = Employee.query.filter_by(user_id=current_user.id).first() #***#
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID) #***#
-    return render_template('addexpense.html', row=row)
+    return render_template('addexpense.html', projectsList=row)
 
 
 @main.route('/addexpense', methods=['POST'])
@@ -123,7 +122,7 @@ def addexpense_post():
     file = request.files['file']
     e_expenseImg = ''
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+        filename = (''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(15)))+".png" #random 15 length string
         file.save(os.path.join('project/', UPLOAD_FOLDER, filename))
         e_expenseImg = filename
 
@@ -145,7 +144,7 @@ def profile():
     if current_user.is_employee:
         emp_id = Employee.query.filter_by(user_id=current_user.id).first()
         row = Employee.query.filter_by(employeeID=emp_id.employeeID)
-        return render_template('profile.html', name=current_user.name, row=row)
+        return render_template('profile.html', name=emp_id.name, row=row)
     return render_template('profile.html', name=current_user.name)
 
 @main.route('/invite')

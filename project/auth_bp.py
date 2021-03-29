@@ -116,4 +116,4 @@ def login_post():
 
 	if user.needs_reset:
 		return redirect(url_for('auth.resetpassword'))
-	return redirect(url_for('main.profile'))
+	return redirect(url_for('main.index'))

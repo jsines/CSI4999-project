@@ -21,13 +21,12 @@
 
 		<div class="row">
 			<h1>
-				Employees in project
+				Current Employees
 			</h1>
 
 			<table class="table table-striped">
 				<thead>
 					<tr class="">
-						<th>Employee ID</th>
 						<th>Employee Name</th>
 						<th>Employee Email</th>
 						<th>Job Title</th>
@@ -36,7 +35,6 @@
 				</thead>
 				{% for employee in EmployeesInProject %}
 				<tr>
-					<td>{{employee.employeeID}}</td>
 					<td>{{employee.name}}</td>
 					<td>{{employee.emp_email}}</td>
 					<td>{{employee.jobTitle}}</td>
@@ -50,13 +48,12 @@
 
 		<div class="row">
 			<h1>
-				Existing employees
+				Existing Employees
 			</h1>
 
 			<table class="table table-striped">
 				<thead>
 					  <tr class="">
-							<th>Employee ID</th>
 							<th>Employee Name</th>
 							<th>Employee Email</th>
 							<th>Job Title</th>
@@ -65,7 +62,6 @@
 				</thead>
 				{% for existing in existing %}
 					<tr>
-							<td>{{existing.employeeID}}</td>
 							<td>{{existing.name}}</td>
 							<td>{{existing.emp_email}}</td>
 							<td>{{existing.jobTitle}}</td>
