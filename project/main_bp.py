@@ -26,6 +26,18 @@ def timelog():
     row = TimeLog.query.filter_by(employeeID=emp_id.employeeID)
     return render_template('timelogpage.html', title='Overview', row=row)
 
+@main.route('/timelogpage/<timelogid>', methods=["GET", "POST"])
+@login_required
+def deleteTimelog(timelogid=None):
+    timelogdelete = TimeLog.query.filter_by(TimeLogID=timelogid).first()
+    db.session.delete(timelogdelete)
+    db.session.commit()
+    flash("Time Log Successfully Deleted")
+    return timelog()
+
+
+
+
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
 def add_time():
@@ -226,16 +238,28 @@ def view_projects():
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
 
 # Audit project
+@main.route('/projects/<x>/<expenseid>')
 @main.route('/projects/<x>')   
 @login_required 
-def audit_project(x=None):
+def audit_project(x=None, expenseid=None):
+
+
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
-    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg)
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg, ExpenseLog.projectID, ExpenseLog.expenseLogID)
     t = text(
         "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
             projectName))
     result = db.session.execute(t)
+
+    # Remove Expense
+    if not expenseid == None:
+        delexpense = ExpenseLog.query.filter_by(expenseLogID=expenseid).first()
+        db.session.delete(delexpense)
+        db.session.commit()
+        flash("Expense Successfully Deleted.")
+        return redirect(url_for('main.audit_project', x=x))
+
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
 
 # Display receipts

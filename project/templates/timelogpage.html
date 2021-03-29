@@ -17,8 +17,14 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
-			 
-			<h1>Time logs</h1>
+			<h1>Time log</h1>
+			{% with messages = get_flashed_messages() %}
+    		{% if messages %}
+    		{% for msg in messages %}
+    		<p>{{ msg }}</p>
+    		{% endfor %}
+    		{% endif %}
+    		{% endwith %}
 		</div>
 	</div>
     <div class="container-fluid">
@@ -50,6 +56,9 @@
 						<th>
 							End Time
 						</th>
+						<th>
+							Options
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -62,6 +71,7 @@
 						<td>{{ row.startTime}}</td>
 						<td>{{ row.endDate}}</td>
 						<td>{{ row.endTime}}</td>
+						<td><a href="{{ url_for('main.deleteTimelog', timelogid=row.TimeLogID)}}" class="btn-default sbt-sm">Delete</a></td>
     				</tr>
     					{% endfor %}
 					</tr>
