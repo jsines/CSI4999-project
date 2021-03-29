@@ -22,43 +22,69 @@ def index():
 
 @main.route('/timelogpage')
 def timelog():
-    row = TimeLog.query.all()
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = TimeLog.query.filter_by(employeeID=emp_id.employeeID)
     return render_template('timelogpage.html', title='Overview', row=row)
+
+@main.route('/timelogpage/<timelogid>', methods=["GET", "POST"])
+@login_required
+def deleteTimelog(timelogid=None):
+    timelogdelete = TimeLog.query.filter_by(TimeLogID=timelogid).first()
+    db.session.delete(timelogdelete)
+    db.session.commit()
+    flash("Time Log Successfully Deleted")
+    return timelog()
+
+
+
 
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
 def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
-    if not request.form.get("timeworked") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, currentTime=datetime.datetime.now(), time=request.form.get("timeworked"))
+    if not request.form.get("starttime") == None:
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"), endDate=request.form.get("enddate"), startTime=request.form.get("starttime"), endTime=request.form.get("endtime"))
         db.session.add(tl_var)
         db.session.commit()
         flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row)
 
-@main.route('/ManageProjects/<prjName>', methods=["GET", "POST"])
-@main.route('/ManageProjects/<prjName>/<whatToDo>/<assignmentID>', methods=["GET", "POST"])
-@main.route('/ManageProjects/<prjName>/<whatToDo>', methods=["GET", "POST"])
+@main.route('/ManageProjects/<string:prjName>')
+@main.route('/ManageProjects/<string:prjName>/<whatToDo>/<int:employeeID>')
+@main.route('/ManageProjects/<string:prjName>/<whatToDo>')
 @login_required
-def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
-    existing = Employee.query.all()
+def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
+    filterEmployeesAvailable = text(
+        "SELECT employees.name, employees.employeeID, employees.user_id, employees.emp_email, employees.jobTitle, employees.payRate FROM employees LEFT JOIN assignments ON employees.employeeID=assignments.employeeID WHERE employees.employeeID NOT IN (SELECT assignments.employeeID FROM assignments WHERE assignments.projectName == '{}') OR assignments.projectName IS NULL;".format(prjName))
+    existing = db.session.execute(filterEmployeesAvailable)
+
+    Tresult = Project.query.filter_by(EmployerID=current_user.id)
+    t = text(
+        "SELECT Assignments.assignmentID, employees.employeeID, employees.name, employees.emp_email, employees.jobTitle FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName == '{}';".format(prjName))
+    result = db.session.execute(t)
+
     if whatToDo =="removeEmployee":
-        #existing = Employee.query.all()
-        assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
+        assignmentIDToDelete = Assignments.query.filter_by(projectName=prjName, employeeID=employeeID).first()
         db.session.delete(assignmentIDToDelete)
         db.session.commit()
+        return redirect(url_for('main.ManageProjects', prjName=prjName, existing=existing))
+
+    if whatToDo =="AddEmployee":
+        employee_id_var = Assignments(employeeID=employeeID, UserID=current_user.id, projectName=prjName)
+        db.session.add(employee_id_var)
+        db.session.commit()
+        flash("New Employee Added to Project!")
         return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     if whatToDo =="deactivateProject":
-       # existing = Employee.query.all()
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
     if not request.form.get("add_employee_form") == None:
-       # existing = Employee.query.all()
+        existing = Employee.query.all()
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
         db.session.add(employee_id_var)
         db.session.commit()
@@ -80,10 +106,9 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
 def addexpense():
     if not current_user.is_employee:
         return redirect(url_for('main.profile'))
-    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-
-    projects = Project.query.filter_by(EmployerID=this_employee.company_id)
-    return render_template('addexpense.html', projectsList=projects)
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first() #***#
+    row = Assignments.query.filter_by(employeeID=emp_id.employeeID) #***#
+    return render_template('addexpense.html', row=row)
 
 
 @main.route('/addexpense', methods=['POST'])
@@ -226,16 +251,28 @@ def view_projects():
     return render_template('/ViewProjects.html', name=current_user.name, listOfProjects=projects)
 
 # Audit project
+@main.route('/projects/<x>/<expenseid>')
 @main.route('/projects/<x>')   
 @login_required 
-def audit_project(x=None):
+def audit_project(x=None, expenseid=None):
+
+
     project = Project.query.filter_by(projectID=x).first()
     projectName = project.projectName
-    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg)
+    q = ExpenseLog.query.filter_by(projectID=x).join(Employee).add_columns(Employee.emp_email, ExpenseLog.expenseName, ExpenseLog.expenseAmount, ExpenseLog.expenseDescription, ExpenseLog.expenseType, ExpenseLog.expenseImg, ExpenseLog.projectID, ExpenseLog.expenseLogID)
     t = text(
         "SELECT * FROM time_log LEFT JOIN Employees ON Employees.employeeID=time_log.employeeID WHERE time_log.projectName = '{}';".format(
             projectName))
     result = db.session.execute(t)
+
+    # Remove Expense
+    if not expenseid == None:
+        delexpense = ExpenseLog.query.filter_by(expenseLogID=expenseid).first()
+        db.session.delete(delexpense)
+        db.session.commit()
+        flash("Expense Successfully Deleted.")
+        return redirect(url_for('main.audit_project', x=x))
+
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
 
 # Display receipts

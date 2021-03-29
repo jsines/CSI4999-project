@@ -33,9 +33,13 @@ class Project(db.Model):
 class TimeLog(db.Model):
 	TimeLogID = db.Column(db.Integer, primary_key=True)
 	employeeID = db.Column(db.Integer)
+	employeeName = db.Column(db.String(100))
 	projectName = db.Column(db.String(100))
-	currentTime = db.Column(db.Date)
-	time = db.Column(db.Integer)
+	startDate = db.Column(db.String(100))
+	endDate = db.Column(db.String(100))
+	startTime = db.Column(db.String(100))
+	endTime = db.Column(db.String(100))
+
 
 #this creates the Assignment table (where all project-employee asignments go and can be read)
 class Assignments(db.Model):
