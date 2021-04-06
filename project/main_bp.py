@@ -42,7 +42,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
         assignmentIDToDelete = Assignments.query.filter_by(AssignmentID=assignmentID).first()
         db.session.delete(assignmentIDToDelete)
         db.session.commit()
-        return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
+        
 
     if whatToDo =="deactivateProject":
        # existing = Employee.query.all()
