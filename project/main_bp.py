@@ -61,9 +61,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
     Tresult = Project.query.filter_by(EmployerID=current_user.id)
     # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
     # q = db.session.query(Employee,Assignments).select_from(Assignments).join(Employee).filter(Assignments.projectName == prjName).all()
-    t = text(
-        "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
-            prjName))
+ 
     result = db.session.execute(t)
     # print(result.first())
     flash("New Employee Added to Project!")
