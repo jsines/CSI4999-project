@@ -51,7 +51,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
-   
+    if not request.form.get("add_employee_form") == None:
        # existing = Employee.query.all()
         employee_id_var = Assignments(employeeID=request.form.get("add_employee_form"), UserID=current_user.id, projectName=prjName)
         db.session.add(employee_id_var)
