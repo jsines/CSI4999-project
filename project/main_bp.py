@@ -117,11 +117,7 @@ def invite():
 @main.route('/invite', methods=['POST'])
 @login_required
 def invite_post():
-    # Find data from form
-    email = request.form.get('email')
-    name = request.form.get('name')
-
-    # Check if user exists already
+  
     user = User.query.filter_by(email=email).first()
     if user:
         flash('A user with that email already exists!')
