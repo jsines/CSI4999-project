@@ -48,7 +48,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
        # existing = Employee.query.all()
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
-        db.session.commit()
+       
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
     if not request.form.get("add_employee_form") == None:
