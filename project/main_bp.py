@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments
 from . import db, mail, UPLOAD_FOLDER
-
+ 
 main = Blueprint('main', __name__)
 
 # for file uploading
