@@ -13,6 +13,21 @@
 
 </h2> Personal Information <h2>
 
+<table class="table table-striped">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job Title</th>
+                <th>Pay Rate</th>
+            </tr>
+        </thead> {% for row in row %}
+        <tr>
+            <td>{{row.name}}</td>
+            <td>{{row.emp_email}}</td>
+            <td>{{row.jobTitle}}</td>
+            <td>{{row.payRate}}</td>
+        </tr> {% endfor %} </table>
 
 {% endblock %}
 
