@@ -73,7 +73,7 @@ def ManageProjects(prjName=None,assignmentID=None,whatToDo=None):
 @login_required
 def addexpense():
     if not current_user.is_employee:
-        return redirect(url_for('main.profile'))
+       
     this_employee = Employee.query.filter_by(user_id=current_user.id).first()
 
     projects = Project.query.filter_by(EmployerID=this_employee.company_id)
