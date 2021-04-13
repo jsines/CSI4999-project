@@ -51,10 +51,10 @@
 							Start Time
 						</th>
 						<th>
-							End Date
+							End Time
 						</th>
 						<th>
-							End Time
+							Description
 						</th>
 						<th>
 							Options
@@ -69,8 +69,8 @@
 						<td>{{ row.employeeName}}</td>
         				<td>{{ row.startDate}}</td>
 						<td>{{ row.startTime}}</td>
-						<td>{{ row.endDate}}</td>
 						<td>{{ row.endTime}}</td>
+						<td>{{ row.description}}</td>
 						<td><a href="{{ url_for('main.deleteTimelog', timelogid=row.TimeLogID)}}" class="btn-default sbt-sm">Delete</a></td>
     				</tr>
     					{% endfor %}
