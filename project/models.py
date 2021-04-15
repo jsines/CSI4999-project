@@ -36,7 +36,7 @@ class TimeLog(db.Model):
 	employeeName = db.Column(db.String(100))
 	projectName = db.Column(db.String(100))
 	startDate = db.Column(db.String(100))
-	endDate = db.Column(db.String(100))
+	description = db.Column(db.String(1000))
 	startTime = db.Column(db.String(100))
 	endTime = db.Column(db.String(100))
 

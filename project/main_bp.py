@@ -44,11 +44,11 @@ def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
     if not request.form.get("starttime") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"), endDate=request.form.get("enddate"), startTime=request.form.get("starttime"), endTime=request.form.get("endtime"))
+        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"),startTime=request.form.get("starttime"), endTime=request.form.get("endtime"), description=request.form.get("description"))
         db.session.add(tl_var)
         db.session.commit()
         flash("New Time Log Successfully Added!")
-    return render_template('add_time.html', row=row)
+    return render_template('add_time.html', row=row, time=datetime.date.today())
 
 @main.route('/ManageProjects/<string:prjName>')
 @main.route('/ManageProjects/<string:prjName>/<whatToDo>/<int:employeeID>')
