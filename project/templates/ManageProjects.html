@@ -66,7 +66,12 @@
 							<td>{{existing.emp_email}}</td>
 							<td>{{existing.jobTitle}}</td>
 							<td>
+								{% if projectToManage.projectOngoing==1 %}
 									<a href="{{ url_for('main.ManageProjects', prjName = prjName, employeeID = existing.employeeID, whatToDo='AddEmployee') }}" class="btn-default sbt-sm">Add to Project</a></td>
+								{% endif %}
+								{% if projectToManage.projectOngoing==0 %}
+									Reactivate project to add employees.
+								{% endif %}
 							</td>
 					</tr>
 				{% endfor %}
@@ -75,7 +80,12 @@
 		</div>
 
 		<div class="row">
-			<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='deactivateProject') }}" class="btn-default sbt-sm">Deactivate Project</a></td>
+			{% if projectToManage.projectOngoing==1 %}
+				<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='deactivateProject') }}" class="btn-default sbt-sm">Deactivate Project</a></td>
+			{% endif %}
+			{% if projectToManage.projectOngoing==0 %}
+				<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='reactivateProject') }}" class="btn-default sbt-sm">Reactivate Project</a></td>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}
