@@ -80,6 +80,14 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
     if whatToDo =="deactivateProject":
         projectToDeactivate = Project.query.filter_by(projectName=prjName).first()
         projectToDeactivate.projectOngoing = 0
+
+        db.session.query(Assignments).filter_by(projectName=prjName).delete()
+        db.session.commit()
+        return redirect(url_for('main.view_projects', title='Overview', existing=existing))
+
+    if whatToDo =="reactivateProject":
+        projectToReactivate = Project.query.filter_by(projectName=prjName).first()
+        projectToReactivate.projectOngoing = 1
         db.session.commit()
         return redirect(url_for('main.view_projects', title='Overview', existing=existing))
 
@@ -97,8 +105,10 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
         "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
             prjName))
     result = db.session.execute(t)
-    # print(result.first())
-    return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing)
+
+    projectToManage = Project.query.filter_by(projectName=prjName).first()
+
+    return render_template('/ManageProjects.html', prjName=prjName, Tresult=Tresult, EmployeesInProject=result, title='Overview', existing=existing, projectToManage=projectToManage)
 
 @main.route('/addexpense')
 @login_required
