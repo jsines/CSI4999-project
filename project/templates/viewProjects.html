@@ -7,7 +7,6 @@
     <thead>
       <tr class="">
         <th>Project Name</th>
-        <th>Hours (TODO)</th>
         <th>Ongoing?</th>
         <th>Options</th>
       </tr>
@@ -15,7 +14,6 @@
         {% for project in listOfProjects %}
             <tr>
                 <td>{{project.projectName}}</td>
-                <td>TODO</td>
                 <td>{{project.projectOngoing}}</td>
                 <td>
                     <a href="{{ url_for('main.audit_project', x = project.projectID) }}" class="btn-default sbt-sm">View</a>
