@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href='/static/stylesheet.css' />
+<div class="container">
+    <table class="table table-striped">
+    <thead>
+      <tr class="">
+        <th>Time</th>
+        <th>Project Name</th>
+        <th>Employee Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+        {% for x in auditLogs %}
+            <tr>
+                <td>{{x.time}}</td>
+                <td>{{x.projectName}}</td>
+                <td>{{x.employeeName}}</td>
+                <td>{{x.description}}</td>
+            </tr>
+        {% endfor %}
+  </table>
+</div>
+{% endblock %}

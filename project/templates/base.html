@@ -51,6 +51,11 @@
                     <a class="nav-link" href="{{ url_for('main.employees') }}">Employees</a> 
                 </li> 
                 {% endif %}
+                {% if current_user.is_authenticated and not current_user.is_employee %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.audit') }}">Audit</a> 
+                </li> 
+                {% endif %}
                 {% if current_user.is_authenticated and current_user.is_employee %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.timelog') }}">Time Logs</a>

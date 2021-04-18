@@ -59,3 +59,11 @@ class ExpenseLog(db.Model):
 	expenseDescription = db.Column(db.String(10000))
 	expenseType = db.Column(db.String(20))
 	expenseImg = db.Column(db.String(100))
+
+class AuditLog(db.Model):
+	auditID = db.Column(db.Integer, primary_key=True)
+	employerID = db.Column(db.Integer)
+	time = db.Column(db.String(1000))
+	employeeName = db.Column(db.String(100))
+	projectName = db.Column(db.String(100))
+	description = db.Column(db.String(1000))
