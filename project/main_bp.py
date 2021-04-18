@@ -41,8 +41,20 @@ def deleteTimelog(timelogid=None):
     flash("Time Log Successfully Deleted")
     return timelog()
 
+@main.route('/ExpenseLogs')
+def expenseLog():
+    emp_id = Employee.query.filter_by(user_id=current_user.id).first()
+    row = ExpenseLog.query.filter_by(employeeID=emp_id.employeeID)
+    return render_template('ExpenseLogs.html', title='Overview', row=row)
 
-
+@main.route('/ExpenseLogs/<expenselogid>', methods=["GET", "POST"])
+@login_required
+def deleteExpenseLog(expenselogid=None):
+    expenselogdelete = ExpenseLog.query.filter_by(expenseLogID=expenselogid).first()
+    db.session.delete(expenselogdelete)
+    db.session.commit()
+    flash("Expense Log Successfully Deleted")
+    return expenseLog()
 
 @main.route('/add_time', methods=["GET", "POST"])
 @login_required
@@ -72,7 +84,7 @@ def add_time():
 @login_required
 def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
     filterEmployeesAvailable = text(
-        "SELECT employees.name, employees.employeeID, employees.user_id, employees.emp_email, employees.jobTitle, employees.payRate FROM employees LEFT JOIN assignments ON employees.employeeID=assignments.employeeID WHERE employees.employeeID NOT IN (SELECT assignments.employeeID FROM assignments WHERE assignments.projectName == '{}') OR assignments.projectName IS NULL;".format(prjName))
+        "SELECT DISTINCT employees.name, employees.employeeID, employees.user_id, employees.emp_email, employees.jobTitle, employees.payRate FROM employees LEFT JOIN assignments ON employees.employeeID=assignments.employeeID WHERE employees.employeeID NOT IN (SELECT assignments.employeeID FROM assignments WHERE assignments.projectName == '{}') OR assignments.projectName IS NULL;".format(prjName))
     existing = db.session.execute(filterEmployeesAvailable)
 
     Tresult = Project.query.filter_by(EmployerID=current_user.id)
@@ -115,8 +127,6 @@ def ManageProjects(prjName=None,whatToDo=None,employeeID=None):
         return redirect(url_for('main.ManageProjects', prjName=prjName, title='Overview', existing=existing))
 
     Tresult = Project.query.filter_by(EmployerID=current_user.id)
-    # joinedTables = Assignments.query.join(Employee, Assignments.employeeID==Employee.employeeID).filter_by(projectName="test")
-    # q = db.session.query(Employee,Assignments).select_from(Assignments).join(Employee).filter(Assignments.projectName == prjName).all()
     t = text(
         "SELECT * FROM Assignments LEFT JOIN Employees ON Employees.employeeID=Assignments.employeeID WHERE Assignments.projectName = '{}';".format(
             prjName))
@@ -178,6 +188,13 @@ def profile():
         return render_template('profile.html', name=emp_id.name, row=row)
     return render_template('profile.html', name=current_user.name)
 
+@main.route('/viewEmployee/<x>', methods=["GET"])
+@login_required
+def viewEmployee(x=None):
+    row = Employee.query.filter_by(employeeID=x)
+    row2 = Assignments.query.filter_by(employeeID=x)
+    return render_template('EmployeeView.html', row=row, row2=row2)
+
 @main.route('/invite')
 @login_required
 def invite():
@@ -218,7 +235,7 @@ def invite_post():
     db.session.commit()
 
     # Email user that their account has been created
-    msg = Message('Account Created', sender='dcaatimemamangement@gmail.com', recipients=[email])
+    msg = Message('Account Created', sender='dcaatimemanagement@gmail.com', recipients=[email])
     msg.body = "An account has been created for you. Your temporary password is " + temporary_password + "."
     mail.send(msg)
 

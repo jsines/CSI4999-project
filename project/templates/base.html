@@ -63,6 +63,11 @@
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.is_employee %}
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.expenseLog') }}">Expense Logs</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.add_time') }}">Add Time Log</a>
                 </li>
                 {% endif %}
