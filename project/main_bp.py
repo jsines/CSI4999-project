@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
-from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments
+from .models import User, Employee, Project, TimeLog, ExpenseLog, Assignments, AuditLog
 from . import db, mail, UPLOAD_FOLDER
  
 main = Blueprint('main', __name__)
@@ -32,6 +32,12 @@ def deleteTimelog(timelogid=None):
     timelogdelete = TimeLog.query.filter_by(TimeLogID=timelogid).first()
     db.session.delete(timelogdelete)
     db.session.commit()
+    # AUDIT TIMELOG DELETED
+    employee = Employee.query.filter_by(user_id=current_user.id).first()
+    auditdesc = 'Removed TimeLog entry on {} from {} to {}'.format(timelogdelete.startDate, timelogdelete.startTime, timelogdelete.endTime)
+    auditlog = AuditLog(time=datetime.date.today(), employerID=employee.company_id, employeeName=timelogdelete.employeeName, projectName=timelogdelete.projectName, description=auditdesc)
+    db.session.add(auditlog)
+    db.session.commit()
     flash("Time Log Successfully Deleted")
     return timelog()
 
@@ -47,6 +53,12 @@ def deleteExpenseLog(expenselogid=None):
     expenselogdelete = ExpenseLog.query.filter_by(expenseLogID=expenselogid).first()
     db.session.delete(expenselogdelete)
     db.session.commit()
+    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+    this_project = Project.query.filter_by(projectID=expenselogdelete.projectID).first()
+    auditdesc = 'Removed Expense entry {} for {} of type {}'.format(expenselogdelete.expenseName, expenselogdelete.expenseAmount, expenselogdelete.expenseType)
+    auditlog = AuditLog(time=datetime.date.today(), employerID=this_employee.company_id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
+    db.session.add(auditlog)
+    db.session.commit()
     flash("Expense Log Successfully Deleted")
     return expenseLog()
 
@@ -56,8 +68,18 @@ def add_time():
     emp_id = Employee.query.filter_by(user_id=current_user.id).first()
     row = Assignments.query.filter_by(employeeID=emp_id.employeeID)
     if not request.form.get("starttime") == None:
-        tl_var = TimeLog(projectName=request.form.get("projectslist"), employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=request.form.get("startdate"),startTime=request.form.get("starttime"), endTime=request.form.get("endtime"), description=request.form.get("description"))
+        project = request.form.get("projectslist")
+        start_date = request.form.get("startdate")
+        start_time = request.form.get("starttime")
+        end_time = request.form.get("endtime")
+        tl_var = TimeLog(projectName=project, employeeID=emp_id.employeeID, employeeName=current_user.name, startDate=start_date,startTime=start_time, endTime=end_time, description=request.form.get("description"))
         db.session.add(tl_var)
+        db.session.commit()
+        # AUDIT TIMELOG ADDED
+        employee = Employee.query.filter_by(user_id=current_user.id).first()
+        auditdesc = 'Added TimeLog entry on {} from {} to {}'.format(start_date, start_time, end_time)
+        auditlog = AuditLog(time=datetime.date.today(), employerID=employee.company_id, employeeName=current_user.name, projectName=project, description=auditdesc)
+        db.session.add(auditlog)
         db.session.commit()
         flash("New Time Log Successfully Added!")
     return render_template('add_time.html', row=row, time=datetime.date.today())
@@ -154,6 +176,11 @@ def addexpense_post():
     e_expenseType=request.form.get("expenseType")
     expense_entry = ExpenseLog(projectID=e_projectid, employeeID=e_employeeid, expenseName=e_name, expenseAmount=e_amount, expenseDescription=e_description, expenseType=e_expenseType, expenseImg=e_expenseImg)
     db.session.add(expense_entry)
+    db.session.commit()
+    # AUDIT EXPENSE ADDED
+    auditdesc = 'Added Expense entry {} for {} of type {}'.format(e_name, e_amount, e_expenseType)
+    auditlog = AuditLog(time=datetime.date.today(), employerID=this_employee.company_id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
+    db.session.add(auditlog)
     db.session.commit()
     flash("Expense Successfully Added!")
     return redirect(url_for('main.addexpense'))
@@ -300,6 +327,12 @@ def audit_project(x=None, expenseid=None):
         return redirect(url_for('main.audit_project', x=x))
 
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
+
+@main.route('/audit')
+@login_required
+def audit():
+    auditlogs = AuditLog.query.filter_by(employerID=current_user.id)
+    return render_template('audit.html', auditLogs=auditlogs)
 
 # Display receipts
 @main.route('/receipts/<filename>')
