@@ -23,7 +23,7 @@ def create_app():
 
 	app.config['MAIL_SERVER']='smtp.gmail.com'
 	app.config['MAIL_PORT'] = 465
-	app.config['MAIL_USERNAME'] = 'dcaatimemamangement@gmail.com'
+	app.config['MAIL_USERNAME'] = 'dcaatimemanagement@gmail.com'
 	app.config['MAIL_PASSWORD'] = os.environ.get('MAILPWD')
 	app.config['MAIL_USE_TLS'] = False
 	app.config['MAIL_USE_SSL'] = True
