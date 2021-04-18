@@ -53,6 +53,12 @@ def deleteExpenseLog(expenselogid=None):
     expenselogdelete = ExpenseLog.query.filter_by(expenseLogID=expenselogid).first()
     db.session.delete(expenselogdelete)
     db.session.commit()
+    this_employee = Employee.query.filter_by(user_id=current_user.id).first()
+    this_project = Project.query.filter_by(projectID=expenselogdelete.projectID).first()
+    auditdesc = 'Removed Expense entry {} for {} of type {}'.format(expenselogdelete.expenseName, expenselogdelete.expenseAmount, expenselogdelete.expenseType)
+    auditlog = AuditLog(time=datetime.date.today(), employerID=this_employee.company_id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
+    db.session.add(auditlog)
+    db.session.commit()
     flash("Expense Log Successfully Deleted")
     return expenseLog()
 
