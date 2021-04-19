@@ -1,6 +1,4 @@
-{% extends "base.html" %}
-{% block content %}
-<link rel="stylesheet" href='/static/stylesheet.css' />
+{% extends "base.html" %} {% block content %}
 <div class="container">
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -11,13 +9,11 @@
     {% endwith %}
     <form action="/addexpense" method="POST" enctype=multipart/form-data>
         <div class="form-group">
-            <label for="expenseName">Name: </label>
+            <h1>Create a New Expense: </h1>
             <input type="text" name="expenseName" class="form-control" placeholder="Expense Name" required> </div>
         <div class="form-group">
-            <label for="expenseAmount">Amount: </label>
             <input type="text" name="expenseAmount" class="form-control" placeholder="Amount" required> </div>
         <div class="form-group">
-            <label for="expenseDescription">Description: </label>
             <input type="text" name="expenseDescription" class="form-control" placeholder="Description" required> </div>
         <div class="form-group">
         	<label for="projectName">Project Name:</label>
@@ -37,12 +33,12 @@
     			<option value="Other">Other</option>
     		</select>
     	</div>
-    	<div class="form-group">
-    		<label for="expenseImg">Receipt:</label>
+    	<div class="form-group btn btn-primary">
+    		Add Receipt
     		<input type=file name=file>
     	</div>
         <div class="form-group">
-            <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit</button>
+            <button type="submit" name="submit" class="btn btn-primary" value="Submit">Submit Expense</button>
         </div>
     </form>
 </div>

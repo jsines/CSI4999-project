@@ -1,5 +1,4 @@
 {% extends "base.html" %} {% block content %}
-    <link rel="stylesheet" href='/static/stylesheet.css' />
 <h1 class="title">
   Welcome, {{ name }}!
 </h1>
@@ -27,18 +26,6 @@
             <td>{{row.emp_email}}</td>
             <td>{{row.jobTitle}}</td>
             <td>{{row.payRate}}</td>
-        </tr> {% endfor %} </table>
-
-<h2> Assigned Projects</h2>
-
-<table class="table table-striped">
-        <thead>
-            <tr class="w3-light-grey">
-                <th>Project Name</th>
-            </tr>
-        </thead> {% for row2 in row2 %}
-        <tr>
-            <td>{{row2.projectName}}</td>
         </tr> {% endfor %} </table>
 
 {% endblock %}

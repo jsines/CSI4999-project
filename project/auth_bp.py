@@ -69,7 +69,7 @@ def forgotpassword_post():
 	user.password = generate_password_hash(temporary_password, method='sha256')
 	user.needs_reset = True
 	db.session.commit()
-	msg = Message('Password Reset', sender='dcaatimemanagement@gmail.com', recipients=[user.email])
+	msg = Message('Password Reset', sender='dcaatimemamangement@gmail.com', recipients=[user.email])
 	msg.body = "Your password has been reset. Your temporary password is " + temporary_password + "."
 	mail.send(msg)
 
