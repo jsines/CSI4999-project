@@ -306,7 +306,7 @@ def view_projects():
 
 # Audit project
 @main.route('/projects/<x>/<expenseid>')
-@main.route('/projects/<x>')   
+@main.route('/projects/<x>')
 @login_required 
 def audit_project(x=None, expenseid=None):
 

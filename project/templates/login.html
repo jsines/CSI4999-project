@@ -1,5 +1,4 @@
 {% extends "base.html" %} {% block content %}
-<link rel="stylesheet" href='/static/stylesheet.css' />
 <div class="container">
     <div class="row">
         <div class="col1">
@@ -20,4 +19,5 @@
                     </div>
             </form> <a href="{{ url_for('auth.forgotpassword') }}">Forgot Password?</a> </div>
         </div>
-    </div> {% endblock %}
+</div>
+{% endblock %}

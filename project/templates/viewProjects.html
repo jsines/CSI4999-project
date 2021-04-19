@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<link rel="stylesheet" href='/static/stylesheet.css' />
-<div class="container">
-    <a class="nav-link" href="{{ url_for('main.create_project') }}">Create Project</a>
-    <table class="table table-striped">
+<div>
+    <table class="table table-striped"> <a class="btn btn-primary" href="{{ url_for('main.create_project') }}">Create Project</a>
     <thead>
       <tr class="">
         <th>Project Name</th>
