@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CSI4999 project</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/stylesheet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/stylesheet.css" /> </head>
+
+<body>
+    <div class="page-header">
+        <h1>DCAA Compliant Time Management Application</h1> 
+    </div>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+            <ul class="nav">
+
+                <img src="/static/timelog.jpg" alt="Logo" style="width:40px;">
+ 
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.index') }}">Home</a> 
+                </li> 
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a> 
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and not current_user.is_employee %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.view_projects') }}">Projects</a>
+                    </li>
+                {% endif %}
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                </li> 
+                {% endif %} 
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a> 
+                </li> 
+                {% endif %} 
+                {% if current_user.is_authenticated and not current_user.is_employee %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.employees') }}">Employees</a> 
+                </li> 
+                {% endif %}
+                {% if current_user.is_authenticated and not current_user.is_employee %}
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ url_for('main.audit') }}">Audit</a> 
+                </li> 
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.timelog') }}">Time Logs</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.expenseLog') }}">Expense Logs</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.add_time') }}">Add Time Log</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.addexpense') }}">Add Expense</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <div>
+            <div> {% block content %} {% endblock %} </div>
+        </div>
+    </div>
+</body>
+
+</html>

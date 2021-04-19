@@ -55,7 +55,7 @@ def deleteExpenseLog(expenselogid=None):
     db.session.commit()
     this_employee = Employee.query.filter_by(user_id=current_user.id).first()
     this_project = Project.query.filter_by(projectID=expenselogdelete.projectID).first()
-    auditdesc = 'Removed Expense entry {} for {} dollars of type {}'.format(expenselogdelete.expenseName, expenselogdelete.expenseAmount, expenselogdelete.expenseType)
+    auditdesc = 'Removed Expense entry {} for {} of type {}'.format(expenselogdelete.expenseName, expenselogdelete.expenseAmount, expenselogdelete.expenseType)
     auditlog = AuditLog(time=datetime.date.today(), employerID=this_employee.company_id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
     db.session.add(auditlog)
     db.session.commit()
@@ -178,7 +178,7 @@ def addexpense_post():
     db.session.add(expense_entry)
     db.session.commit()
     # AUDIT EXPENSE ADDED
-    auditdesc = 'Added Expense entry {} for {} dollars of type {}'.format(e_name, e_amount, e_expenseType)
+    auditdesc = 'Added Expense entry {} for {} of type {}'.format(e_name, e_amount, e_expenseType)
     auditlog = AuditLog(time=datetime.date.today(), employerID=this_employee.company_id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
     db.session.add(auditlog)
     db.session.commit()
@@ -191,8 +191,7 @@ def profile():
     if current_user.is_employee:
         emp_id = Employee.query.filter_by(user_id=current_user.id).first()
         row = Employee.query.filter_by(employeeID=emp_id.employeeID)
-        row2 = Assignments.query.filter_by(employeeID=emp_id.employeeID)
-        return render_template('profile.html', name=emp_id.name, row=row, row2=row2)
+        return render_template('profile.html', name=emp_id.name, row=row)
     return render_template('profile.html', name=current_user.name)
 
 @main.route('/viewEmployee/<x>', methods=["GET"])
@@ -306,7 +305,7 @@ def view_projects():
 
 # Audit project
 @main.route('/projects/<x>/<expenseid>')
-@main.route('/projects/<x>')   
+@main.route('/projects/<x>')
 @login_required 
 def audit_project(x=None, expenseid=None):
 
@@ -325,12 +324,6 @@ def audit_project(x=None, expenseid=None):
         db.session.delete(delexpense)
         db.session.commit()
         flash("Expense Successfully Deleted.")
-        this_employee = Employee.query.filter_by(user_id=current_user.id).first()
-        this_project = Project.query.filter_by(projectID=delexpense.projectID).first()
-        auditdesc = 'Removed Expense entry {} for {} dollars of type {}'.format(delexpense.expenseName, delexpense.expenseAmount, delexpense.expenseType)
-        auditlog = AuditLog(time=datetime.date.today(), employerID=current_user.id, employeeName=current_user.name, projectName=this_project.projectName, description=auditdesc)
-        db.session.add(auditlog)
-        db.session.commit()
         return redirect(url_for('main.audit_project', x=x))
 
     return render_template('auditproject.html', query=q, query2=result, projectName=projectName)
