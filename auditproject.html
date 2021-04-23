@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block content %}
+        <div>
+            <div>
+                <h1>{{ projectName }} Expenses</h1>
+                <div>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for msg in messages %}
+                <p>{{ msg }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                </div>
+             
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="w3-light-grey">
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Receipt</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead> {% for row in query %}
+                    <tr>
+                        <td>{{row.emp_email}}</td>
+                        <td>{{row.expenseName}}</td>
+                        <td>{{row.expenseAmount}}</td>
+                        <td>{{row.expenseDescription}}</td>
+                        <td>{{row.expenseType}}</td>
+                        <td><a href="{{ url_for('main.display_receipt', filename=row.expenseImg) }}" class="btn-default sbt-sm">View</a></td>
+                        <td><a href="{{ url_for('main.audit_project', expenseid=row.expenseLogID, x=row.projectID) }}" class="btn-default sbt-sm">Delete</a></td>
+                    </tr> {% endfor %} </table>
+            
+                <h2>{{ projectName }} Time Logs</h2>
+            
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="w3-light-grey">
+                            <th>Employee Name</th>
+                            <th>Start Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead> {% for row in query2 %}
+                    <tr>
+                        <td>{{row.name}}</td>
+                        <td>{{row.startDate}}</td>
+                        <td>{{row.startTime}}</td>
+                        <td>{{row.endTime}}</td>
+                        <td>{{row.description}}</td>
+                    </tr> {% endfor %} </table>
+            
+            </div>
+            </div>
+{% endblock %}
