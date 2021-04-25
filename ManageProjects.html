@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% block content %}
+        <div>
+			<div>
+				<div>
+					<div>
+					<div class="row">
+                        <h1>
+                            Manage Project: {{ prjName }}
+                        </h1>
+                        <br>
+                       {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+					</div>
+				</div>
+
+				<div class="row">
+					<h3>
+						Employees Assigned
+					</h3>
+
+					<table class="table table-striped">
+						<thead>
+							<tr class="">
+								<th>Employee Name</th>
+								<th>Employee Email</th>
+								<th>Job Title</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						{% for employee in EmployeesInProject %}
+						<tr>
+							<td>{{employee.name}}</td>
+							<td>{{employee.emp_email}}</td>
+							<td>{{employee.jobTitle}}</td>
+							<td>
+								<a href="{{ url_for('main.ManageProjects', prjName = prjName, employeeID=employee.employeeID, whatToDo='removeEmployee') }}" class="btn-default sbt-sm">Remove from Project</a></td>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+				</div>
+                    <br/>
+
+				<div class="row">
+					<h3>
+						Existing Employees
+					</h3>
+
+					<table class="table table-striped">
+						<thead>
+							  <tr class="">
+									<th>Employee Name</th>
+									<th>Employee Email</th>
+									<th>Job Title</th>
+									<th>Options</th>
+							  </tr>
+						</thead>
+						{% for existing in existing %}
+							<tr>
+									<td>{{existing.name}}</td>
+									<td>{{existing.emp_email}}</td>
+									<td>{{existing.jobTitle}}</td>
+									<td>
+										{% if projectToManage.projectOngoing==1 %}
+											<a href="{{ url_for('main.ManageProjects', prjName = prjName, employeeID = existing.employeeID, whatToDo='AddEmployee') }}" class="btn-default sbt-sm">Add to Project</a></td>
+										{% endif %}
+										{% if projectToManage.projectOngoing==0 %}
+											Reactivate project to add employees.
+										{% endif %}
+									</td>
+							</tr>
+						{% endfor %}
+
+					</table>
+				</div>
+
+				<div class="row">
+					{% if projectToManage.projectOngoing==1 %}
+						<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='deactivateProject') }}" class="btn-default sbt-sm">Deactivate Project</a></td>
+					{% endif %}
+					{% if projectToManage.projectOngoing==0 %}
+						<a href="{{ url_for('main.ManageProjects', prjName = prjName, whatToDo='reactivateProject') }}" class="btn-default sbt-sm">Reactivate Project</a></td>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+{% endblock %}
